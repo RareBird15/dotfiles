@@ -3,3 +3,7 @@ config:
 
 globs:
   - "**/*.md"
+
+ignores:
+  - "LICENSE"
+  - ".github/CODEOWNERS"
