@@ -1,0 +1,25 @@
+packages:
+  linux:
+    - 1password-cli
+    - tealdeer
+    - dust
+    - sd
+    - choose-rust-git
+    - bat
+    - eza
+    - fzf
+    - zoxide
+    - starship
+  windows:
+    - AgileBits.1Password
+    - AgileBits.1Password.CLI
+    - bootandy.dust
+    - chmln.sd
+    - dandavison.delta
+    - eza-community.eza
+    - sharkdp.bat
+    - starship.starship
+    - junegunn.fzf              # Added for fuzzy searching
+    - ajeetdsouza.zoxide        # Added for smart directory jumping
+    - Google.Chrome.Beta
+    - Microsoft.VisualStudioCode.Insiders

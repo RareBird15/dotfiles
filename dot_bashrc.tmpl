@@ -1,0 +1,224 @@
+# ~/.bashrc
+
+# =====================
+# 0. XDG & ENVIRONMENT
+# =====================
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_CACHE_HOME="$HOME/.cache"
+mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_CACHE_HOME"
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
+export GOPATH="$XDG_DATA_HOME/go"
+export NODE_REPL_HISTORY="$XDG_STATE_HOME/node_repl_history"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export HISTFILE="$XDG_STATE_HOME/bash/history"
+export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
+export GNUPGHOME="$XDG_DATA_HOME/gnupg"
+export NPM_CONFIG_CACHE="$XDG_CACHE_HOME/npm"
+export NPM_CONFIG_TMP="${XDG_RUNTIME_DIR:-$XDG_CACHE_HOME/npm_tmp}"
+export RANDFILE="$XDG_STATE_HOME/openssl_rnd"
+{{- if eq .chezmoi.os "linux" }}
+  {{- if hasKey .chezmoi.kernel "osrelease" }}
+    {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+      export BROWSER=wslview
+    {{- end }}
+  {{- end }}
+{{- end }}
+export PAGER="less -Ri"
+
+# =====================
+# 1. INTERACTIVE CHECK
+# =====================
+[[ $- != *i* ]] && return
+
+# =====================
+# 2. HISTORY & SHELL BEHAVIOR
+# =====================
+HISTSIZE=10000
+HISTFILESIZE=10000
+HISTCONTROL=ignoredups:erasedups
+shopt -s histappend
+shopt -s autocd
+shopt -s checkwinsize
+shopt -s cmdhist
+PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }history -a; history -n"
+
+# =====================
+# 3. PATH
+# =====================
+case ":$PATH:" in
+*":$HOME/.local/bin:"*) ;;
+*) PATH="$HOME/.local/bin:$PATH" ;;
+esac
+case ":$PATH:" in
+*":$HOME/bin:"*) ;;
+*) PATH="$HOME/bin:$PATH" ;;
+esac
+export PATH
+
+# =====================
+# 4. EDITOR & DIALOGS
+# =====================
+export EDITOR="code-insiders --wait"
+export VISUAL="code-insiders --wait"
+{{- if eq .chezmoi.os "linux" }}
+  {{- if hasKey .chezmoi.kernel "osrelease" }}
+    {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+      export SUDO_EDITOR="/mnt/c/Users/Windows11/AppData/Local/Programs/Microsoft VS Code Insiders/bin/code-insiders --wait"
+    {{- end }}
+  {{- end }}
+{{- end }}
+export DIALOGOPTS='--no-lines --visit-items'
+export GPG_TTY="$(tty 2>/dev/null)"
+
+# =====================
+# 5. COMPLETION & READLINE
+# =====================
+bind 'set completion-ignore-case on'
+bind 'set show-all-if-ambiguous on'
+bind 'set page-completions off'
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+bind '"\e[1;5C": forward-word'
+bind '"\e[1;5D": backward-word'
+bind '"\e[5C": forward-word'
+bind '"\e[5D": backward-word'
+bind '"\e[H": beginning-of-line'
+bind '"\e[F": end-of-line'
+bind '"\e[1~": beginning-of-line'
+bind '"\e[4~": end-of-line'
+
+# =====================
+# 6. COMPLETION SUPPORT
+# =====================
+if [[ -r /usr/share/bash-completion/bash_completion ]]; then
+  . /usr/share/bash-completion/bash_completion
+fi
+
+# =====================
+# 7. ALIASES & EXPORTS
+# =====================
+# File & Directory
+alias ll='eza -l'
+alias la='eza -la'
+alias lt='eza --tree'
+alias lta='eza --tree -a'
+alias wget="wget --hsts-file=$XDG_CACHE_HOME/wget-hsts"
+alias fp='fzf --preview "bat --style=numbers --color=always --line-range :500 {}"'
+alias rg='rg --smart-case'
+# Safer file operations
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
+# Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias ex='cd ~/exercism'
+
+# Jump to a project directory using fzf and zoxide
+pj() {
+  local dir
+  dir=$(zoxide query -l | fzf --height 40% --reverse --header="Jump to directory") && cd "$dir"
+}
+
+# Git
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git pull'
+alias gd='git diff'
+alias gco='git checkout'
+alias gb='git branch'
+alias gcb='git checkout -b'
+
+# Chezmoi
+alias cz='chezmoi'
+alias cza='chezmoi apply'
+alias cze='chezmoi edit'
+alias c='clear'
+alias reload='source ~/.bashrc'
+
+{{- if eq .chezmoi.os "linux" }}
+  {{- if hasKey .chezmoi.kernel "osrelease" }}
+    {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+      unalias open 2>/dev/null
+      if command -v wslview >/dev/null 2>&1; then
+        alias open='wslview'
+      fi
+      alias winpath='wslpath -w'
+      alias clip='clip.exe'
+      alias winget='winget.exe'
+    {{- end }}
+  {{- end }}   
+
+# Linux Package Exporter
+export_linux_packages() {
+    local dir="$HOME/.local/share/chezmoi/package-lists/linux"
+    mkdir -p "$dir"
+    echo -e "\e[36mExporting Linux package lists to $dir...\e[0m"
+
+    if command -v pacman >/dev/null 2>&1; then pacman -Qqe > "$dir/pacman.txt"; fi
+    if command -v cargo >/dev/null 2>&1; then cargo install --list > "$dir/cargo.txt"; fi
+    if command -v uv >/dev/null 2>&1; then uv tool list > "$dir/uv.txt"; fi
+    if command -v npm >/dev/null 2>&1; then npm list -g --depth=0 > "$dir/npm.txt"; fi
+    if command -v pip >/dev/null 2>&1; then pip list > "$dir/pip.txt"; fi
+
+    echo -e "\e[32mDone! Lists saved to chezmoi source.\e[0m"
+}
+alias expl='export_linux_packages'
+{{- end }}
+
+# Modern Rust-tooling
+alias ls='eza --icons --group-directories-first'
+alias cat='bat --paging=never'                  
+alias du='dust'                                  
+alias ch='choose'                                
+alias tldr='tldr'                                
+
+# QMK Keymap Shortcuts
+alias qk='cd ~/qmk_firmware/keyboards/keychron/k10_max/ansi/rgb/keymaps/lanie/'
+alias qkf='cd ~/qmk_firmware && qk && qmk flash -kb keychron/k10_max/ansi/rgb -km lanie'
+
+# =====================
+# 8. APP INTEGRATIONS (HDD OPTIMIZED)
+# =====================
+# Sourcing pre-generated files is significantly faster than running 'eval' on an HDD
+if [[ -f ~/.cache/bash_inits/fzf.bash ]]; then source ~/.cache/bash_inits/fzf.bash; fi
+if [[ -f ~/.cache/bash_inits/zoxide.bash ]]; then source ~/.cache/bash_inits/zoxide.bash; fi
+if [[ -f ~/.cache/bash_inits/pieces.bash ]]; then source ~/.cache/bash_inits/pieces.bash; fi
+if [[ -f ~/.cache/bash_inits/starship.bash ]]; then source ~/.cache/bash_inits/starship.bash; fi
+
+# Tealdeer (tldr) maintenance
+if command -v tldr >/dev/null 2>&1; then
+    (tldr --update >/dev/null 2>&1 &)
+fi
+
+# =====================
+# 9. CUSTOM FUNCTIONS & REMINDERS
+# =====================
+bible_reader_reminder() {
+  local bin_file="$HOME/projects/bible-reader/.venv/bin/maybe-read-bible"
+  local stamp_file="$HOME/.local/state/bible-reader/last_prompt_date.txt"
+  local today
+
+  [[ -f "$bin_file" ]] || return
+
+  today="$(date +%F)"
+  if [[ -f "$stamp_file" ]]; then
+    local last_stamp=""
+    if ! IFS= read -r last_stamp <"$stamp_file"; then
+      last_stamp=""
+    fi
+    [[ "$last_stamp" == "$today" ]] && return
+  fi
+  
+  printf '\nBible reading pending. Run: br\n\n'
+}
+
+alias br='"$HOME/projects/bible-reader/.venv/bin/maybe-read-bible"'
+
+bible_reader_reminder

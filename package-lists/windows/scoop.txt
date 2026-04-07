@@ -1,0 +1,19 @@
+{
+    "buckets": [
+        {
+            "Name": "main",
+            "Source": "https://github.com/ScoopInstaller/Main.git",
+            "Updated": "2026-03-29T20:01:56-05:00",
+            "Manifests": 1478
+        }
+    ],
+    "apps": [
+        {
+            "Version": "0.6.1",
+            "Info": "",
+            "Name": "tldr",
+            "Updated": "2026-03-20T19:58:43.6855835-05:00",
+            "Source": "main"
+        }
+    ]
+}

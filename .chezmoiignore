@@ -1,0 +1,46 @@
+# Bash files that must stay in $HOME
+
+.bash_logout
+.bash_profile
+.bash_history
+
+# VS Code internals (Do not move these)
+
+.vscode-server\*
+.vscode-remote-containers
+.lh/
+
+# AI Tooling Clutter
+
+.claude*
+.gemini*
+.copilot*
+.codex*
+.agents
+.a11y-agent-team
+.smithery
+.claude-server-commander
+
+# Runtime/Package Manager junk
+
+.npm
+.rustup
+.cargo
+.dotnet
+.node_repl_history
+.wget-hsts
+.rnd
+.redhat
+
+{{ if ne .chezmoi.os "linux" }}
+run_onchange_install-packages.sh
+install-packages.sh
+{{ end }}
+
+{{ if ne .chezmoi.os "windows" }}
+run_onchange_before_install-packages.ps1
+install-packages.ps1
+AppData/
+Documents/
+.wslconfig
+{{ end }}

@@ -1,0 +1,15 @@
+/usr/lib
+├── @github/copilot@1.0.3
+├── @google/gemini-cli@0.35.3
+├── @openai/codex@0.114.0
+├── @smithery/cli@4.6.0
+├── acorn@8.16.0
+├── corepack@0.34.6
+├── eslint@9.35.0
+├── node-gyp@12.2.0
+├── nopt@9.0.0
+├── npm@11.12.1
+├── playwright@1.58.2
+├── prettier-plugin-go-template@0.0.15
+└── semver@7.7.4
+

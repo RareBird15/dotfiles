@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"uri": "vscode-remote://wsl+archlinux/home/lanie/lanies-vault"
+		}
+	],
+	"remoteAuthority": "wsl+archlinux",
+	"settings": {
+		"foam.edit.linkReferenceDefinitions": "withExtensions",
+		"gitdoc.enabled": true
+	}
+}

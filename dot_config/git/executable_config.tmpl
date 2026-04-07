@@ -1,0 +1,23 @@
+[init]
+	defaultBranch = main
+[user]
+	email = lanie.rarebird15@gmail.com
+	name = Lanie
+[core]
+[init]
+	defaultBranch = main
+[user]
+	email = lanie.rarebird15@gmail.com
+	name = Lanie
+
+[core]
+{{- if eq .chezmoi.os "linux" }}
+  {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+	# WSL: Use Windows SSH client to talk to 1Password
+	sshCommand = /mnt/c/Windows/System32/OpenSSH/ssh.exe
+  {{- else }}
+	# Standard Linux: No special sshCommand needed (default ssh)
+  {{- end }}
+{{- else if eq .chezmoi.os "windows" }}
+	# Windows: Use standard SSH (1Password hooks into this via Named Pipes automatically)
+{{- end }}

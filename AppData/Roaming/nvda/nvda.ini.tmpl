@@ -1,0 +1,141 @@
+schemaVersion = 21
+[screenCurtain]
+	warnOnLoad = True
+	playToggleSounds = True
+[update]
+	autoCheck = True
+	startupNotification = True
+	allowUsageStats = True
+	askedAllowUsageStats = True
+[remote]
+	enabled = False
+	[[connections]]
+	[[controlServer]]
+		autoconnect = False
+		selfHosted = False
+		connectionMode = 0
+		host = ""
+		key = ""
+	[[seenMOTDs]]
+	[[trustedCertificates]]
+	[[ui]]
+		confirmDisconnectAsFollower = True
+		muteOnLocalControl = False
+[addonStore]
+	automaticUpdates = update
+	allowIncompatibleUpdates = False
+	defaultUpdateChannel = 1
+[general]
+	language = Windows
+	saveConfigurationOnExit = True
+	askToExit = True
+	playStartAndExitSounds = True
+	loggingLevel = INFO
+	showWelcomeDialogAtStartup = False
+	preventDisplayTurningOff = True
+[math]
+	[[speech]]
+		impairment = Blindness
+		language = Auto
+		speechStyle = ClearSpeak
+		verbosity = Medium
+		mathRate = 100
+		pauseFactor = 100
+		speechSound = None
+		chemistry = SpellOut
+	[[speech.speechOverrides]]
+	[[speech.ClearSpeak]]
+	[[navigation]]
+		navMode = Enhanced
+		resetNavMode = True
+		overview = False
+		resetOverview = True
+		navVerbosity = Medium
+		autoZoomOut = True
+		copyAs = MathML
+	[[braille]]
+		brailleCode = Auto
+		brailleNavHighlight = EndPoints
+	[[braille.nemeth]]
+	[[braille.UEB]]
+	[[braille.vietnam]]
+	[[braille.LaTeX]]
+	[[other]]
+		decimalSeparator = Auto
+[development]
+[speech]
+	synth = espeak
+	autoLanguageSwitching = False
+	delayedCharacterDescriptions = True
+	excludedSpeechModes = 1,
+	symbolLevel = 100
+	[[oneCore]]
+		voice = HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech_OneCore\Voices\Tokens\MSTTS_V110_enUS_DavidM
+		volume = 100
+	[[espeak]]
+		voice = en-us
+		variant = klatt6
+		rate = 35
+		pitch = 40
+		inflection = 75
+		volume = 100
+		rateBoost = True
+	[[eloquence]]
+		voice = 65536
+		variant = 1
+		pitch = 65
+		inflection = 30
+		volume = 92
+		rgh = 0
+		bth = 0
+		rate = 70
+		backquoteVoiceTags = True
+		ABRDICT = True
+		phrasePrediction = True
+[braille]
+	translationTable = en-ueb-g2.ctb
+	inputTable = en-ueb-g2.ctb
+	mode = followCursors
+	tetherTo = auto
+	[[noBraille]]
+	[[brailliantB]]
+	[[hidBrailleStandard]]
+[vision]
+	[[NVDAHighlighter]]
+		highlightFocus = False
+		highlightNavigator = False
+		highlightBrowseMode = False
+[keyboard]
+	NVDAModifierKeys = 7
+	allowSkimReadingInSayAll = True
+	speakTypedCharacters = 1
+	speakTypedWords = 0
+[reviewCursor]
+	followMouse = True
+	followCaret = True
+[presentation]
+	reportMultiSelect = True
+	reportDynamicContentChanges = True
+	[[progressBarUpdates]]
+		progressBarOutputMode = off
+[virtualBuffers]
+	useScreenLayout = False
+	autoSayAllOnPageLoad = False
+[uwpOcr]
+	language = en-US
+[audio]
+	audioDuckingMode = 0
+	soundSplitState = 1
+[placeMarkers]
+[clipContentsDesigner]
+	confirmToCopy = False
+	confirmToCut = False
+[emoticons]
+	announcement = 1
+[mouse]
+	enableMouseTracking = True
+[VisionAssistant]
+	api_key = {{ onepasswordRead "op://Personal/Gemini API Key/credential" }}
+	check_update_startup = True
+	copy_to_clipboard = True
+	ocr_engine = gemini

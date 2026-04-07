@@ -1,0 +1,29 @@
+{{- $osID := .chezmoi.os -}}
+
+# --- 1. INTERPRETERS (The "How-To" for scripts) ---
+[interpreters.ps1]
+{{- if eq $osID "windows" }}
+    command = "powershell.exe"
+    args = ["-NoLogo", "-NoProfile"]
+{{- end }}
+
+[interpreters.sh]
+    {{- if eq .chezmoi.os "windows" }}
+    command = "bash"
+{{- else }}
+    command = "/bin/bash"
+{{- end }}
+
+# --- 2. GIT SETTINGS ---
+[git]
+    autoCommit = true
+    autoPush = true
+
+# --- 3. DATA SECTIONS (The variables for your templates) ---
+[data.common]
+    editor_preference = "insiders"
+    editor_wait_flag = "--wait"
+
+[data.gitconfig]
+    email = "lanie.rarebird15@gmail.com"
+    name = "Lanie"

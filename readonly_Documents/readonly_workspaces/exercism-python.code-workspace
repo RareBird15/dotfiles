@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"uri": "vscode-remote://wsl+archlinux/home/lanie/exercism/python"
+		}
+	],
+	"remoteAuthority": "wsl+archlinux",
+	"settings": {
+		"emeraldwalk.runonsave": {
+			"commands": [
+				{
+					"match": "\\.py$",
+					"cmd": "docformatter --in-place --wrap-summaries 88 --wrap-descriptions 88 \"${file}\""
+				}
+			]
+		},
+		"python.analysis.autoFormatStrings": true
+	}
+}

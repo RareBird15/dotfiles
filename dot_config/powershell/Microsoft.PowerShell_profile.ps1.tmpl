@@ -1,0 +1,323 @@
+# Microsoft.PowerShell_profile.ps1
+# Managed by chezmoi
+
+# ------------------------------
+# 1. Rendered Config Values & Environment
+# ------------------------------
+$EditorPreference = "{{ .common.editor_preference }}"
+$EditorWaitFlag = "{{ .common.editor_wait_flag }}"
+
+# Detect environment
+$MyIsWindows = $IsWindows
+$MyIsLinux = $IsLinux
+$MyIsWSL = (Test-Path /proc/sys/kernel/osrelease)
+
+# ------------------------------
+# 2. Windows-Only Logic (WinGet, Gpk, Choco, Scoop)
+# ------------------------------
+{{- if eq .chezmoi.os "windows" }}
+# Ensure WinGet Links, local bin, and gpk are in PATH
+$ExtraPaths = @(
+    "$HOME\bin",
+    "$env:LocalAppdata\Microsoft\WinGet\Links",
+    "C:\Program Files\gpk"
+)
+foreach ($P in $ExtraPaths) {
+    if ((Test-Path $P) -and ($env:PATH -notlike "*$P*")) { 
+        $env:Path += ";$P" 
+    }
+}
+
+# Fast import for PowerToys (No -ListAvailable for HDD speed)
+try {
+    Import-Module -Name Microsoft.WinGet.CommandNotFound -ErrorAction SilentlyContinue
+} catch {}
+
+# Windows-Native Export Function
+function Export-WindowsPackages {
+    $dir = "$HOME\.local\share\chezmoi\package-lists\windows"
+    if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force }
+
+    Write-Host "Exporting Windows package lists..." -ForegroundColor Cyan
+
+    if (Get-Command winget -ErrorAction SilentlyContinue) { winget export -o "$dir\winget.json" --include-versions }
+    if (Get-Command choco -ErrorAction SilentlyContinue) { choco list > "$dir\choco.txt" }
+    if (Get-Command scoop -ErrorAction SilentlyContinue) { scoop export > "$dir\scoop.txt" }
+    if (Get-Command cargo -ErrorAction SilentlyContinue) { cargo install --list > "$dir\cargo.txt" }
+    if (Get-Command npm -ErrorAction SilentlyContinue) { npm list -g --depth=0 > "$dir\npm.txt" }
+    if (Get-Command pnpm -ErrorAction SilentlyContinue) { pnpm list -g --depth=0 > "$dir\pnpm.txt" }
+    if (Get-Command pip -ErrorAction SilentlyContinue) { pip list > "$dir\pip.txt" }
+
+    Get-InstalledModule | Select-Object Name, Version | Export-Csv -Path "$dir\pwsh_modules.csv" -NoTypeInformation
+    
+    Write-Host "Exporting full registry software list..." -ForegroundColor Cyan
+    $uninstallKeys = @(
+        "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*",
+        "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*",
+        "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*"
+    )
+    Get-ItemProperty $uninstallKeys -ErrorAction SilentlyContinue |
+        Where-Object { $_.DisplayName -and $_.SystemComponent -ne 1 -and $_.ParentKeyName -eq $null } |
+        Select-Object DisplayName, DisplayVersion, Publisher |
+        Sort-Object DisplayName |
+        Export-Csv -Path "$dir\all_windows_software.csv" -NoTypeInformation
+    
+    Write-Host "Done! Lists saved to chezmoi source." -ForegroundColor Green
+}
+Set-Alias expw Export-WindowsPackages
+{{- end }}
+
+# ------------------------------
+# 3. Editor Resolution Helpers (Shared)
+# ------------------------------
+function Get-PreferredCodeCommand {
+    $candidates = if ($EditorPreference -eq "insiders") { 
+        @("code-insiders", "code") 
+    } else { 
+        @("code", "code-insiders") 
+    }
+
+    foreach ($candidate in $candidates) {
+        if (Get-Command $candidate -ErrorAction SilentlyContinue) { 
+            return $candidate 
+        }
+    }
+    return $null
+}
+
+function Get-PreferredCodeWindowsBinPath {
+    if (-not $MyIsWSL) { return $null }
+    if (-not (Get-Command cmd.exe -ErrorAction SilentlyContinue)) { return $null }
+    if (-not (Get-Command wslpath -ErrorAction SilentlyContinue)) { return $null }
+
+    $localAppDataWin = (cmd.exe /c echo %LOCALAPPDATA% 2>$null).Trim()
+    if (-not $localAppDataWin) { return $null }
+
+    $localAppDataUnix = (wslpath -u $localAppDataWin).Trim()
+    if (-not $localAppDataUnix) { return $null }
+
+    $candidates = if ($EditorPreference -eq "insiders") {
+        @(
+            "$localAppDataUnix/Programs/Microsoft VS Code Insiders/bin/code-insiders", 
+            "$localAppDataUnix/Programs/Microsoft VS Code/bin/code"
+        )
+    } else {
+        @(
+            "$localAppDataUnix/Programs/Microsoft VS Code/bin/code", 
+            "$localAppDataUnix/Programs/Microsoft VS Code Insiders/bin/code-insiders"
+        )
+    }
+
+    foreach ($candidate in $candidates) {
+        if (Test-Path $candidate) { return $candidate }
+    }
+    return $null
+}
+
+$PreferredCodeCommand = Get-PreferredCodeCommand
+$PreferredCodeWindowsBinPath = Get-PreferredCodeWindowsBinPath
+
+if ($PreferredCodeCommand) {
+    $env:EDITOR = "$PreferredCodeCommand $EditorWaitFlag"
+    $env:VISUAL = "$PreferredCodeCommand $EditorWaitFlag"
+}
+
+if ($MyIsWSL) {
+    if ($PreferredCodeWindowsBinPath) {
+        $env:SUDO_EDITOR = "$PreferredCodeWindowsBinPath $EditorWaitFlag"
+    } elseif ($PreferredCodeCommand) {
+        $env:SUDO_EDITOR = "$PreferredCodeCommand $EditorWaitFlag"
+    }
+} elseif ($MyIsLinux) {
+    if ($PreferredCodeCommand) {
+        $env:SUDO_EDITOR = "$PreferredCodeCommand $EditorWaitFlag"
+    }
+}
+
+# ------------------------------
+# 4. Linux/WSL Environment Additions
+# ------------------------------
+$env:DIALOGOPTS = "--no-lines --visit-items"
+
+try {
+    $env:GPG_TTY = (tty)
+} catch {}
+
+{{- if eq .chezmoi.os "linux" }}
+if ($MyIsLinux) {
+    $desiredPaths = @(
+        "$HOME/.local/bin",
+        "$HOME/bin"
+    )
+
+    $pathParts = $env:PATH -split ':'
+
+    foreach ($desiredPath in $desiredPaths) {
+        if ($desiredPath -notin $pathParts) {
+            $env:PATH = "${desiredPath}:" + $env:PATH
+            $pathParts = $env:PATH -split ':'
+        }
+    }
+}
+{{- end }}
+
+# ------------------------------
+# 5. PSReadLine (NVDA Optimized)
+# ------------------------------
+try {
+    Import-Module PSReadLine -ErrorAction Stop
+
+    Set-PSReadLineOption -HistorySearchCursorMovesToEnd
+    Set-PSReadLineOption -BellStyle None  # Essential for screen readers
+    Set-PSReadLineOption -PredictionSource History
+
+    Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+    Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+    Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+    Set-PSReadLineKeyHandler -Key Ctrl+RightArrow -Function ForwardWord
+    Set-PSReadLineKeyHandler -Key Ctrl+LeftArrow -Function BackwardWord
+    Set-PSReadLineKeyHandler -Key Home -Function BeginningOfLine
+    Set-PSReadLineKeyHandler -Key End -Function EndOfLine
+} catch {}
+
+# ------------------------------
+# 6. Prompt Fallback
+# ------------------------------
+function prompt {
+    $location = (Get-Location).Path
+    $branchText = ""
+    $rootText = ""
+
+    try {
+        # Using -like check against path is faster than Get-Command for HDD
+        if ($env:PATH -like "*Git*") {
+            git rev-parse --is-inside-work-tree *> $null
+            if ($LASTEXITCODE -eq 0) {
+                $branch = git symbolic-ref --quiet --short HEAD 2>$null
+                if ($branch) { $branchText = " [$branch]" }
+            }
+        }
+    } catch {}
+
+    if ($MyIsLinux) {
+        try {
+            if ((id -u) -eq "0") { $rootText = " ROOT" }
+        } catch {}
+    }
+
+    "Lanies-PC $location$branchText$rootText> "
+}
+
+# ------------------------------
+# 7. Chezmoi Helpers & Global Aliases
+# ------------------------------
+function Invoke-Chezmoi { chezmoi @args }
+function Invoke-ChezmoiApply { chezmoi apply @args }
+function Edit-Chezmoi { chezmoi edit @args }
+
+Set-Alias cz   chezmoi
+Set-Alias cza  Invoke-ChezmoiApply
+Set-Alias cze  Edit-Chezmoi
+Set-Alias c    Clear-Host
+Set-Alias ls   eza   -ErrorAction SilentlyContinue
+Set-Alias cat  bat   -ErrorAction SilentlyContinue
+
+# ------------------------------
+# 8. Open / Path / Clipboard / Winget Helpers
+# ------------------------------
+if ($MyIsWindows) {
+    function Open-Here { 
+        param([string]$Path = ".") 
+        Invoke-Item $Path 
+    }
+    Set-Alias open Open-Here
+}
+
+if ($MyIsLinux) {
+    function Open-HereInWindows {
+        param([string]$Path = ".")
+        if ($env:PATH -like "*wsl*") {
+            $windowsPath = wslpath -w $Path
+            explorer.exe $windowsPath *> $null
+        }
+    }
+
+    function Get-WindowsPath {
+        param([Parameter(ValueFromRemainingArguments = $true)][string[]]$PathParts)
+        if ($env:PATH -like "*wsl*") { 
+            wslpath -w ($PathParts -join ' ') 
+        }
+    }
+
+    function Invoke-WinGet {
+        param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Arguments)
+        winget.exe @Arguments 
+    }
+
+    function Set-ClipboardText {
+        param([Parameter(ValueFromPipeline = $true)][string]$InputObject)
+        process { 
+            $InputObject | clip.exe 
+        }
+    }
+
+    Set-Alias open    Open-HereInWindows
+    Set-Alias winpath Get-WindowsPath
+    Set-Alias winget  Invoke-WinGet
+    Set-Alias clip    Set-ClipboardText
+}
+
+# ------------------------------
+# 9. Bible Reader
+# ------------------------------
+function Invoke-BibleReader {
+    if ($MyIsWindows) {
+        bash -c "~/projects/bible-reader/maybe_read_bible.sh"
+    } else {
+        bash "$HOME/projects/bible-reader/maybe_read_bible.sh"
+    }
+}
+
+function Show-BibleReaderReminder {
+    $projectDir = "$HOME/projects/bible-reader"
+    $scriptFile = "$projectDir/maybe_read_bible.sh"
+    $stampFile = "$projectDir/.bible_prompt_last_date"
+    $today = Get-Date -Format 'yyyy-MM-dd'
+
+    if (-not (Test-Path $scriptFile)) { return }
+
+    if (Test-Path $stampFile) {
+        try {
+            $lastStamp = (Get-Content $stampFile -TotalCount 1).Trim()
+            if ($lastStamp -eq $today) { return }
+        } catch {}
+    }
+
+    Write-Host "`nBible reading pending. Run: br`n"
+}
+
+Set-Alias br Invoke-BibleReader
+
+# ------------------------------
+# 10. Optional Tool Init (Optimized for HDD)
+# ------------------------------
+if ($env:PATH -like "*fzf*") {
+    try {
+        Import-Module PSFzf
+        Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
+    } catch {}
+}
+
+if ($env:PATH -like "*zoxide*") {
+    try { Invoke-Expression (& zoxide init powershell | Out-String) } catch {}
+}
+
+if ($env:PATH -like "*pieces*") {
+    try { Invoke-Expression (& pieces completion powershell | Out-String) } catch {}
+}
+
+if ($env:PATH -like "*starship*") {
+    try { Invoke-Expression (& starship init powershell) } catch {}
+}
+
+Show-BibleReaderReminder

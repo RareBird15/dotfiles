@@ -1,0 +1,17 @@
+{{ if eq .chezmoi.os "windows" -}}
+# --- Windows / PowerShell Setup ---
+$apps = @(
+    {{ range .packages.windows -}}
+    {{ . | quote }}
+    {{ end -}}
+)
+
+foreach ($app in $apps) {
+    # Check if the package is already installed
+    winget list --id "$app" --source winget >$null 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Installing $app..."
+        winget install --id "$app" --silent --accept-package-agreements --accept-source-agreements
+    }
+}
+{{ end -}}

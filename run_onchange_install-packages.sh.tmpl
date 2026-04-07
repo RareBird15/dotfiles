@@ -1,0 +1,19 @@
+#!/bin/bash
+{{ if eq .chezmoi.os "linux" -}}
+# --- Arch Linux / WSL Setup ---
+# Ensure base-devel and git are present for building paru-bin
+sudo pacman -Sy --needed --noconfirm base-devel git
+
+# Install Paru (AUR Helper) if not present
+if ! command -v paru >/dev/null 2>&1; then
+    echo "Installing paru..."
+    TEMP_DIR=$(mktemp -d)
+    git clone https://aur.archlinux.org/paru-bin.git "$TEMP_DIR"
+    cd "$TEMP_DIR" || exit
+    makepkg -si --noconfirm
+    rm -rf "$TEMP_DIR"
+fi
+
+# Install only the packages defined in .chezmoidata/packages.yaml
+paru -S --needed --noconfirm {{ range .packages.linux }}{{ . | quote }} {{ end }}
+{{ end -}}
