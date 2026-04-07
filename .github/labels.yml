@@ -1,0 +1,35 @@
+- name: documentation
+  color: "0e8a16"
+  description: Documentation or repo metadata changes
+
+- name: github
+  color: "5319e7"
+  description: GitHub configuration, templates, or workflows
+
+- name: shell
+  color: "1d76db"
+  description: Bash or shell configuration changes
+
+- name: powershell
+  color: "0052cc"
+  description: PowerShell profile or script changes
+
+- name: linux
+  color: "fbca04"
+  description: Linux or WSL-related changes
+
+- name: windows
+  color: "c2e0c6"
+  description: Windows-related changes
+
+- name: qmk
+  color: "d93f0b"
+  description: Keyboard firmware or keymap changes
+
+- name: accessibility
+  color: "bfdadc"
+  description: Accessibility-related configuration changes
+
+- name: security
+  color: "b60205"
+  description: Security-related changes or findings

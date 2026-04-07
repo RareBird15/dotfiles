@@ -1,0 +1,46 @@
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+
+github:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+
+shell:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.sh"
+          - "dot_bashrc.tmpl"
+
+powershell:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.ps1"
+          - "**/*.ps1.tmpl"
+
+linux:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "package-lists/linux/**"
+          - "run_onchange_install-packages.sh.tmpl"
+          - "dot_config/paru/**"
+
+windows:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "AppData/**"
+          - "package-lists/windows/**"
+          - "dot_wslconfig"
+          - "run_onchange_before_install-packages.ps1.tmpl"
+
+qmk:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "qmk_firmware/**"
+
+accessibility:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "AppData/Roaming/nvda/**"

@@ -1,0 +1,18 @@
+# Default owner for the repository
+* @RareBird15
+
+# Documentation and repo metadata
+/README.md @RareBird15
+/CHANGELOG.md @RareBird15
+/CONTRIBUTING.md @RareBird15
+/SECURITY.md @RareBird15
+/.github/ @RareBird15
+
+# Platform and app configuration
+/dot_config/ @RareBird15
+/AppData/ @RareBird15
+/package-lists/ @RareBird15
+
+# Firmware and workspace files
+/qmk_firmware/ @RareBird15
+/readonly_Documents/ @RareBird15
