@@ -1,5 +1,10 @@
 # dotfiles
 
+[![Markdown Lint](https://github.com/RareBird15/dotfiles/actions/workflows/markdownlint.yml/badge.svg)](https://github.com/RareBird15/dotfiles/actions/workflows/markdownlint.yml)
+[![Secret Scan](https://github.com/RareBird15/dotfiles/actions/workflows/secret-scan.yml/badge.svg)](https://github.com/RareBird15/dotfiles/actions/workflows/secret-scan.yml)
+[![PR Labels](https://github.com/RareBird15/dotfiles/actions/workflows/pr-labels.yml/badge.svg)](https://github.com/RareBird15/dotfiles/actions/workflows/pr-labels.yml)
+[![Sync Labels](https://github.com/RareBird15/dotfiles/actions/workflows/sync-labels.yml/badge.svg)](https://github.com/RareBird15/dotfiles/actions/workflows/sync-labels.yml)
+
 Personal dotfiles managed with Chezmoi.
 
 This repository is used to install and maintain shell, editor, package, accessibility,
