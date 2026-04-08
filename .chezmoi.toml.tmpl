@@ -1,6 +1,15 @@
 {{- $osID := .chezmoi.os -}}
 
-# --- 1. INTERPRETERS (The "How-To" for scripts) ---
+# --- 1. 1PASSWORD SETTINGS ---
+    {{- $op_command := "op" -}}
+{{- if or (eq .chezmoi.os "windows") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) -}}
+{{-   $op_command = "op.exe" -}}
+{{- end -}}
+
+[onepassword]
+    command = {{ $op_command | quote }}
+
+# --- 2. INTERPRETERS (The "How-To" for scripts) ---
 [interpreters.ps1]
 {{- if eq $osID "windows" }}
     command = "powershell.exe"
@@ -14,12 +23,12 @@
     command = "/bin/bash"
 {{- end }}
 
-# --- 2. GIT SETTINGS ---
+# --- 3. GIT SETTINGS ---
 [git]
     autoCommit = true
     autoPush = true
 
-# --- 3. DATA SECTIONS (The variables for your templates) ---
+# --- 4. DATA SECTIONS (The variables for your templates) ---
 [data.common]
     editor_preference = "insiders"
     editor_wait_flag = "--wait"
@@ -28,11 +37,3 @@
     email = "lanie.rarebird15@gmail.com"
     name = "Lanie"
 
-    # --- 4. 1PASSWORD SETTINGS ---
-    {{- $op_command := "op" -}}
-{{- if or (eq .chezmoi.os "windows") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) -}}
-{{-   $op_command = "op.exe" -}}
-{{- end -}}
-
-[onePassword]
-    command = {{ $op_command | quote }}
