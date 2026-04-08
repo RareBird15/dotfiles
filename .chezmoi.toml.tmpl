@@ -27,3 +27,12 @@
 [data.gitconfig]
     email = "lanie.rarebird15@gmail.com"
     name = "Lanie"
+
+    # --- 4. 1PASSWORD SETTINGS ---
+    {{- $op_command := "op" -}}
+{{- if or (eq .chezmoi.os "windows") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) -}}
+{{-   $op_command = "op.exe" -}}
+{{- end -}}
+
+[onePassword]
+    command = {{ $op_command | quote }}
