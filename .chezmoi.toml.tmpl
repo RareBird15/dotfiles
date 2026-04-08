@@ -1,7 +1,7 @@
 {{- $osID := .chezmoi.os -}}
 
 # --- 1. 1PASSWORD SETTINGS ---
-    {{- $op_command := "op" -}}
+    {{ $op_command := "op" -}}
 {{- if or (eq .chezmoi.os "windows") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) -}}
 {{-   $op_command = "op.exe" -}}
 {{- end -}}
