@@ -153,7 +153,7 @@ alias reload='source ~/.bashrc'
       alias clip='clip.exe'
       alias winget='winget.exe'
     {{- end }}
-  {{- end }}   
+  {{- end }}
 
 # Linux Package Exporter
 export_linux_packages() {
@@ -174,10 +174,10 @@ alias expl='export_linux_packages'
 
 # Modern Rust-tooling
 alias ls='eza --icons --group-directories-first'
-alias cat='bat --paging=never'                  
-alias du='dust'                                  
-alias ch='choose'                                
-alias tldr='tldr'                                
+alias cat='bat --paging=never'
+alias du='dust'
+alias ch='choose'
+alias tldr='tldr'
 
 # QMK Keymap Shortcuts
 alias qk='cd ~/qmk_firmware/keyboards/keychron/k10_max/ansi/rgb/keymaps/lanie/'
@@ -215,10 +215,23 @@ bible_reader_reminder() {
     fi
     [[ "$last_stamp" == "$today" ]] && return
   fi
-  
+
   printf '\nBible reading pending. Run: br\n\n'
 }
 
 alias br='"$HOME/projects/bible-reader/.venv/bin/maybe-read-bible"'
 
 bible_reader_reminder
+
+# Sanitize blog drafts by removing checkboxes and fixing whitespace
+sanitize_blog() {
+    if [ -z "$1" ]; then
+        echo "Usage: sanitize_blog <filename>"
+        return 1
+    fi
+
+    echo "Cleaning $1..."
+    sed -i -e 's/- \[[ x]\] .*//g' "$1"
+    sed -i -e '/^$/N;/^\n$/D' "$1"
+    echo "Logic preserved. File cleaned."
+}
