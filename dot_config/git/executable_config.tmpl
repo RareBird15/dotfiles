@@ -1,23 +1,31 @@
-[init]
-	defaultBranch = main
 [user]
-	email = lanie.rarebird15@gmail.com
-	name = Lanie
-[core]
-[init]
-	defaultBranch = main
-[user]
-	email = 13343932+RareBird15@users.noreply.github.com
-	name = Lanie
+    name = Lanie
+    email = 13343932+RareBird15@users.noreply.github.com
+    signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM4+2Z+kOsi+j+ABWIJswKTEhkbyiPybKqlEbdnnXaIx
 
-[core]
+[init]
+    defaultBranch = main
+
+[commit]
+    gpgsign = true
+
+[gpg]
+    format = ssh
+
 {{- if eq .chezmoi.os "linux" }}
-  {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
-	# WSL: Use Windows SSH client to talk to 1Password
-	sshCommand = /mnt/c/Windows/System32/OpenSSH/ssh.exe
-  {{- else }}
-	# Standard Linux: No special sshCommand needed (default ssh)
+  {{- if (contains "microsoft" (.chezmoi.kernel.osrelease | lower)) }}
+[core]
+    # WSL: Use Windows SSH client to talk to 1Password
+    sshCommand = /mnt/c/Windows/System32/OpenSSH/ssh.exe
+
+[gpg "ssh"]
+    # WSL: Use the specific 1Password WSL signing helper
+    program = "/mnt/c/Users/Windows11/AppData/Local/Microsoft/WindowsApps/op-ssh-sign-wsl.exe"
   {{- end }}
-{{- else if eq .chezmoi.os "windows" }}
-	# Windows: Use standard SSH (1Password hooks into this via Named Pipes automatically)
+{{- end }}
+
+{{- if eq .chezmoi.os "windows" }}
+[gpg "ssh"]
+    # Windows: Standard 1Password signing path
+    program = "C:/Users/Windows11/AppData/Local/1Password/app/backend/op-ssh-sign.exe"
 {{- end }}
