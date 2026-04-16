@@ -5,5 +5,15 @@
 		}
 	],
 	"remoteAuthority": "wsl+archlinux",
-	"settings": {}
+	"settings": {
+		"markdown.validate.enabled": false,
+		"cSpell.words": [
+			"intersite"
+		],
+		"python.analysis.typeCheckingMode": "basic",
+		"ltex.additionalRules.motherTongue": "en-US",
+		"ltex.completionEnabled": true,
+		"todo-tree.tree.scanMode": "current file",
+		"jinja2-html-enhancer.toggleVariableCheck": true
+	}
 }
