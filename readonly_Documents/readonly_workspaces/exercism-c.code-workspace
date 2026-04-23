@@ -1,0 +1,9 @@
+{
+	"folders": [
+		{
+			"uri": "vscode-remote://wsl+archlinux/home/lanie/exercism/c"
+		}
+	],
+	"remoteAuthority": "wsl+archlinux",
+	"settings": {}
+}

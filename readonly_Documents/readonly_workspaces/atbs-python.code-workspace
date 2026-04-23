@@ -1,0 +1,9 @@
+{
+	"folders": [
+		{
+			"uri": "vscode-remote://wsl+archlinux/home/lanie/projects/atbs-python"
+		}
+	],
+	"remoteAuthority": "wsl+archlinux",
+	"settings": {}
+}

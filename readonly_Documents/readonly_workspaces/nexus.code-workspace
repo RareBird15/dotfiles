@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"uri": "vscode-remote://wsl+archlinux/home/lanie/nexus"
+		}
+	],
+	"remoteAuthority": "wsl+archlinux",
+	"settings": {
+		"iwe.enable": true,
+		"iwe.lsp.serverPath": "/home/lanie/.local/share/cargo/bin/iwes",
+		"iwe.cli.binaryPath": "/home/lanie/.local/share/cargo/bin/iwe",
+		"iwe.trace.server": "verbose",
+		"[markdown]": {
+			"editor.codeActionsOnSave": {
+				"source.fixAll.iwe": "explicit"
+			}
+		}
+	}
+}
