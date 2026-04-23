@@ -15,5 +15,23 @@
 		"ltex.completionEnabled": true,
 		"todo-tree.tree.scanMode": "current file",
 		"jinja2-html-enhancer.toggleVariableCheck": true
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "Run Pelican DevServer",
+				"type": "shell",
+				"command": "make devserver",
+				"group": {
+					"kind": "build",
+					"isDefault": true
+				},
+				"presentation": {
+					"reveal": "always",
+					"panel": "shared"
+				}
+			}
+		]
 	}
 }
