@@ -63,6 +63,11 @@ case ":$PATH:" in
 *) PATH="$HOME/bin:$PATH" ;;
 esac
 export PATH
+# Add npm global binaries to PATH
+case ":$PATH:" in
+*":$HOME/.npm-global/bin:"*) ;;
+*) PATH="$HOME/.npm-global/bin:$PATH" ;;
+esac
 
 # =====================
 # 4. EDITOR & DIALOGS
