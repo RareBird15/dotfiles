@@ -1,10 +1,12 @@
 #!/bin/bash
 {{ if eq .chezmoi.os "linux" -}}
-# --- Arch Linux / WSL Setup ---
-# Ensure base-devel and git are present for building paru-bin
+# 1. Housekeeping: Ensure Bash history folder exists
+mkdir -p "$HOME/.local/state/bash"
+
+# 2. System Prep: Ensure base-devel and git are present
 sudo pacman -Sy --needed --noconfirm base-devel git
 
-# Install Paru (AUR Helper) if not present
+# 3. Install Paru (AUR Helper) if not present
 if ! command -v paru >/dev/null 2>&1; then
     echo "Installing paru..."
     TEMP_DIR=$(mktemp -d)
@@ -14,6 +16,29 @@ if ! command -v paru >/dev/null 2>&1; then
     rm -rf "$TEMP_DIR"
 fi
 
-# Install only the packages defined in .chezmoidata/packages.yaml
-paru -S --needed --noconfirm {{ range .packages.linux }}{{ . | quote }} {{ end }}
+# 4. Handle Architecture-specific packages (like choose)
+{{ if eq .chezmoi.arch "arm64" -}}
+# On Raspberry Pi: Use Cargo for choose to bypass AUR architecture blocks
+if ! command -v choose >/dev/null 2>&1; then
+    echo "Installing choose via Cargo for ARM..."
+    cargo install choose-rust
+fi
+{{- end }}
+
+# 5. Install the main package list
+# We use 'grep -v' to skip choose-rust-git on ARM if it's in your packages.yaml
+PACKAGES=({{ range .packages.linux }}{{ . | quote }} {{ end }})
+
+{{ if eq .chezmoi.arch "arm64" -}}
+# Remove choose-rust-git from the list on ARM so paru doesn't try to build it
+FINAL_LIST=()
+for pkg in "${PACKAGES[@]}"; do
+    [[ "$pkg" != "choose-rust-git" ]] && FINAL_LIST+=("$pkg")
+done
+paru -S --needed --noconfirm "${FINAL_LIST[@]}"
+{{ else -}}
+# On WSL/x86: Just install everything normally
+paru -S --needed --noconfirm "${PACKAGES[@]}"
+{{- end }}
+
 {{ end -}}
