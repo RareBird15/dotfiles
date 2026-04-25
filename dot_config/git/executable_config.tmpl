@@ -1,7 +1,9 @@
 [user]
     name = Lanie
     email = 13343932+RareBird15@users.noreply.github.com
-    signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM4+2Z+kOsi+j+ABWIJswKTEhkbyiPybKqlEbdnnXaIx
+{{- if eq .chezmoi.hostname "stormux" }}
+    signingkey = /home/lanie/.ssh/id_ed25519_pi.pub
+{{- end }}
 
 [init]
     defaultBranch = main
