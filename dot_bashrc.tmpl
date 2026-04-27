@@ -77,6 +77,11 @@ case ":$PATH:" in
 *":$HOME/.local/share/npm-global/bin:"*) ;;
 *) PATH="$HOME/.local/share/npm-global/bin:$PATH" ;;
 esac
+# Add custom Cargo binaries to PATH
+case ":$PATH:" in
+*":$CARGO_HOME/bin:"*) ;;
+*) PATH="$CARGO_HOME/bin:$PATH" ;;
+esac
 
 # =====================
 # 4. EDITOR & DIALOGS
