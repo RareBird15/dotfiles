@@ -40,12 +40,16 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"]
     },
-    "google-tasks": {
+    "googlesuper": {
       "enabled": true,
       "command": "npx",
-      "args": ["-y", "mcp-remote", "https://googletasks.run.tools"],
-      "startup_timeout_sec": 10,
-      "tool_timeout_sec": 60
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://googlesuper.run.tools"
+      ],
+      "startup_timeout_sec": 30,
+      "tool_timeout_sec": 120
     },
     "iwe": {
       "command": "/home/lanie/.local/share/cargo/bin/iwec",
