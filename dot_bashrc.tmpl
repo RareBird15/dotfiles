@@ -44,12 +44,17 @@ export CODEX_HOME="$XDG_CONFIG_HOME/codex"
 export PAGER="less -Ri"
 
 # =====================
-# 1. INTERACTIVE CHECK
+# 1. Exported Variables
+# =====================
+export EXA_API_KEY={{ onepasswordRead "op://Personal/Exa API Key/credential" }}
+
+# =====================
+# 2. INTERACTIVE CHECK
 # =====================
 [[ $- != *i* ]] && return
 
 # =====================
-# 2. HISTORY & SHELL BEHAVIOR
+# 3. HISTORY & SHELL BEHAVIOR
 # =====================
 HISTSIZE=10000
 HISTFILESIZE=10000
@@ -61,7 +66,7 @@ shopt -s cmdhist
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }history -a; history -n"
 
 # =====================
-# 3. PATH
+# 4. PATH
 # =====================
 case ":$PATH:" in
 *":$HOME/.local/bin:"*) ;;
@@ -89,7 +94,7 @@ case ":$PATH:" in
 esac
 
 # =====================
-# 4. EDITOR & DIALOGS
+# 5. EDITOR & DIALOGS
 # =====================
 export EDITOR="code-insiders --wait"
 export VISUAL="code-insiders --wait"
@@ -104,7 +109,7 @@ export DIALOGOPTS='--no-lines --visit-items'
 export GPG_TTY="$(tty 2>/dev/null)"
 
 # =====================
-# 5. COMPLETION & READLINE
+# 6. COMPLETION & READLINE
 # =====================
 bind 'set completion-ignore-case on'
 bind 'set show-all-if-ambiguous on'
@@ -121,14 +126,14 @@ bind '"\e[1~": beginning-of-line'
 bind '"\e[4~": end-of-line'
 
 # =====================
-# 6. COMPLETION SUPPORT
+# 7. COMPLETION SUPPORT
 # =====================
 if [[ -r /usr/share/bash-completion/bash_completion ]]; then
   . /usr/share/bash-completion/bash_completion
 fi
 
 # =====================
-# 7. ALIASES & EXPORTS
+# 8. ALIASES & EXPORTS
 # =====================
 # File & Directory
 alias ll='eza -l'
@@ -214,7 +219,7 @@ alias qk='cd ~/qmk_firmware/keyboards/keychron/k10_max/ansi/rgb/keymaps/lanie/'
 alias qkf='cd ~/qmk_firmware && qk && qmk flash -kb keychron/k10_max/ansi/rgb -km lanie'
 
 # =====================
-# 8. APP INTEGRATIONS (HDD OPTIMIZED)
+# 9. APP INTEGRATIONS (HDD OPTIMIZED)
 # =====================
 # Sourcing pre-generated files is significantly faster than running 'eval' on an HDD
 if [[ -f ~/.cache/bash_inits/fzf.bash ]]; then source ~/.cache/bash_inits/fzf.bash; fi
@@ -228,7 +233,7 @@ if command -v tldr >/dev/null 2>&1; then
 fi
 
 # =====================
-# 9. CUSTOM FUNCTIONS & REMINDERS
+# 10. CUSTOM FUNCTIONS & REMINDERS
 # =====================
 bible_reader_reminder() {
   local bin_file="$HOME/projects/bible-reader/.venv/bin/maybe-read-bible"
@@ -265,8 +270,3 @@ sanitize_blog() {
     sed -i -e '/^$/N;/^\n$/D' "$1"
     echo "Logic preserved. File cleaned."
 }
-
-# =====================
-# 10. Exported Variables
-# =====================
-export EXA_API_KEY={{ onepasswordRead "op://Personal/Exa API Key/credential" }}
