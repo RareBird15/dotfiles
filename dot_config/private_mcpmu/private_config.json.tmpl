@@ -4,42 +4,26 @@
     "brave-search": {
       "enabled": true,
       "command": "npx",
-      "args": [
-        "-y",
-        "@brave/brave-search-mcp-server"
-      ],
-      "env": {
-        "BRAVE_API_KEY": "BSALTsLYTuovDKCbuHY54fgZhKQYulX"
-      },
+      "args": ["-y", "@brave/brave-search-mcp-server"],
+      "env": { "BRAVE_API_KEY": "BSALTsLYTuovDKCbuHY54fgZhKQYulX" },
       "startup_timeout_sec": 10,
       "tool_timeout_sec": 60
     },
     "context7": {
       "enabled": true,
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ],
-      "env": {
-        "CONTEXT7_API_KEY": "ctx7sk-58a5384c-b242-43dc-acd0-266d7d9e37a2"
-      },
+      "args": ["-y", "@upstash/context7-mcp"],
+      "env": { "CONTEXT7_API_KEY": "ctx7sk-58a5384c-b242-43dc-acd0-266d7d9e37a2" },
       "startup_timeout_sec": 10,
       "tool_timeout_sec": 60
     },
     "desktop-commander": {
       "command": "npx",
-      "args": [
-        "--registry",
-        "https://registry.npmjs.org",
-        "@wonderwhy-er/desktop-commander@0.2.37"
-      ]
+      "args": ["--registry", "https://registry.npmjs.org", "@wonderwhy-er/desktop-commander@0.2.37"]
     },
     "exa": {
       "enabled": true,
-      "env": {
-        "EXA_API_KEY": "4477362c-734f-4992-a44a-36a8ec147323e"
-      },
+      "env": { "EXA_API_KEY": "4477362c-734f-4992-a44a-36a8ec147323e" },
       "url": "https://mcp.exa.ai/mcp",
       "bearer_token_env_var": "EXA_API_KEY",
       "startup_timeout_sec": 10,
@@ -48,37 +32,25 @@
     "fetch-url": {
       "enabled": true,
       "command": "npx",
-      "args": [
-        "-y",
-        "@j0hanz/fetch-url-mcp"
-      ],
+      "args": ["-y", "@j0hanz/fetch-url-mcp"],
       "startup_timeout_sec": 10,
       "tool_timeout_sec": 60
     },
     "github-local": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-github"]
     },
     "google-tasks": {
       "enabled": true,
       "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote",
-        "https://googletasks.run.tools"
-      ],
+      "args": ["-y", "mcp-remote", "https://googletasks.run.tools"],
       "startup_timeout_sec": 10,
       "tool_timeout_sec": 60
     },
     "iwe": {
       "command": "/home/lanie/.local/share/cargo/bin/iwec",
       "cwd": "/home/lanie/nexus",
-      "env": {
-        "IWE_PATH": "/home/lanie/nexus"
-      }
+      "env": { "IWE_PATH": "/home/lanie/nexus" }
     },
     "microsoft-learn": {
       "enabled": true,
@@ -86,10 +58,8 @@
       "startup_timeout_sec": 10,
       "tool_timeout_sec": 60
     },
-    "pieces-local": {
-      "url": "http://localhost:39300/model_context_protocol/2024-11-05/sse"
-    },
-    "pieces-tailscale": {
+    {{- if eq .chezmoi.hostname "stormux" }}
+    "pieces": {
       "command": "npx",
       "args": [
         "-y",
@@ -97,40 +67,29 @@
         "https://lanies-pc-1.tail7703f7.ts.net/model_context_protocol/2024-11-05/sse"
       ]
     },
+    {{- else }}
+    "pieces": {
+      "url": "http://localhost:39300/model_context_protocol/2024-11-05/sse"
+    },
+    {{- end }}
     "python-exec": {
       "command": "uvx",
-      "args": [
-        "mcp-python-interpreter",
-        "--dir",
-        "/home/lanie/"
-      ]
+      "args": ["mcp-python-interpreter", "--dir", "/home/lanie/"]
     },
     "sequential-thinking": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "sqlite": {
       "enabled": true,
       "command": "uvx",
-      "args": [
-        "--from",
-        "sqlite-mcp-server-enhanced",
-        "mcp-server-sqlite"
-      ],
+      "args": ["--from", "sqlite-mcp-server-enhanced", "mcp-server-sqlite"],
       "startup_timeout_sec": 10,
       "tool_timeout_sec": 60
     },
     "stormux-files": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "/home/lanie/nexus",
-        "/home/lanie/"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/lanie/nexus", "/home/lanie/"]
     },
     "vestige": {
       "command": "/home/lanie/.local/bin/vestige"
@@ -138,12 +97,10 @@
     "youtube-summarize": {
       "enabled": true,
       "command": "uvx",
-      "args": [
-        "youtube-summarize"
-      ],
+      "args": ["youtube-summarize"],
       "startup_timeout_sec": 10,
       "tool_timeout_sec": 60
     }
   },
-  "lastModified": "2026-04-28T07:42:17.733459274-05:00"
+  "lastModified": "{{ now | date "2006-01-02T15:04:05Z07:00" }}"
 }
