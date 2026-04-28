@@ -265,3 +265,8 @@ sanitize_blog() {
     sed -i -e '/^$/N;/^\n$/D' "$1"
     echo "Logic preserved. File cleaned."
 }
+
+# =====================
+# 10. Exported Variables
+# =====================
+export EXA_API_KEY={{ onepasswordRead "op://Personal/Exa API Key/credential" }}
