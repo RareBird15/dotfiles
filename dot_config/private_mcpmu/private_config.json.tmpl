@@ -92,7 +92,7 @@
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "sqlite": {
-      "enabled": true,
+      "enabled": false,
       "command": "uvx",
       "args": ["--from", "sqlite-mcp-server-enhanced", "mcp-server-sqlite"],
       "startup_timeout_sec": 10,
@@ -114,12 +114,6 @@
       "startup_timeout_sec": 10,
       "tool_timeout_sec": 60
     },
-    "TextExpander": {
-      "enabled": true,
-      "url": "https://mcp.textexpander.com/mcp",
-      "startup_timeout_sec": 10,
-      "tool_timeout_sec": 60
-    },
     "vestige": {
       "enabled": true,
       "command": "/home/lanie/.local/bin/vestige"
@@ -135,7 +129,7 @@
   "namespaces": {
     "dev": {
       "description": "Programming and system execution tools",
-      "serverIds": ["desktop-commander", "github-local", "pieces", "python-exec", "sequential-thinking", "TextExpander", "vestige"]
+      "serverIds": ["desktop-commander", "github-local", "pieces", "python-exec", "sequential-thinking", "vestige"]
     },
     "web": {
       "description": "Services that pull in information from the internet",
