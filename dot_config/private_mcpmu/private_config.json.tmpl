@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "servers": {
     "brave-search": {
-      "namespace": "web",
       "enabled": true,
       "command": "npx",
       "args": ["-y", "@brave/brave-search-mcp-server"],
@@ -11,7 +10,6 @@
       "tool_timeout_sec": 60
     },
     "context7": {
-      "namespace": "nexus",
       "enabled": true,
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"],
@@ -20,13 +18,11 @@
       "tool_timeout_sec": 60
     },
     "desktop-commander": {
-      "namespace": "dev",
       "enabled": true,
       "command": "npx",
       "args": ["--registry", "https://registry.npmjs.org", "@wonderwhy-er/desktop-commander@0.2.37"]
     },
     "duckduckgo": {
-      "namespace": "web",
       "enabled": true,
       "command": "uvx",
       "args": ["duckduckgo-mcp-server"],
@@ -34,7 +30,6 @@
       "tool_timeout_sec": 60
     },
     "exa": {
-      "namespace": "web",
       "enabled": true,
       "env": { "EXA_API_KEY": {{ onepasswordRead "op://Personal/Exa API Key/credential" | quote }} },
       "url": "https://mcp.exa.ai/mcp",
@@ -43,7 +38,6 @@
       "tool_timeout_sec": 60
     },
     "fetch-url": {
-      "namespace": "web",
       "enabled": true,
       "command": "npx",
       "args": ["-y", "@j0hanz/fetch-url-mcp"],
@@ -51,32 +45,24 @@
       "tool_timeout_sec": 60
     },
     "github-local": {
-      "namespace": "dev",
       "enabled": true,
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"]
     },
     "googlesuper": {
-      "namespace": "hub",
       "enabled": true,
       "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote",
-        "https://googlesuper.run.tools"
-      ],
+      "args": ["-y", "mcp-remote", "https://googlesuper.run.tools"],
       "startup_timeout_sec": 30,
       "tool_timeout_sec": 120
     },
     "iwe": {
-      "namespace": "nexus",
       "enabled": true,
       "command": "/home/lanie/.local/share/cargo/bin/iwec",
       "cwd": "/home/lanie/nexus",
       "env": { "IWE_PATH": "/home/lanie/nexus" }
     },
     "microsoft-learn": {
-      "namespace": "nexus",
       "enabled": true,
       "url": "https://learn.microsoft.com/api/mcp",
       "startup_timeout_sec": 10,
@@ -84,36 +70,27 @@
     },
     {{- if eq .chezmoi.hostname "stormux" }}
     "pieces": {
-      "namespace": "dev",
       "enabled": true,
       "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote",
-        "https://lanies-pc-1.tail7703f7.ts.net/model_context_protocol/2024-11-05/sse"
-      ]
+      "args": ["-y", "mcp-remote", "https://lanies-pc-1.tail7703f7.ts.net/model_context_protocol/2024-11-05/sse"]
     },
     {{- else }}
     "pieces": {
-      "namespace": "dev",
       "enabled": true,
       "url": "http://localhost:39300/model_context_protocol/2024-11-05/sse"
     },
     {{- end }}
     "python-exec": {
-      "namespace": "dev",
       "enabled": true,
       "command": "uvx",
       "args": ["mcp-python-interpreter", "--dir", "/home/lanie/"]
     },
     "sequential-thinking": {
-      "namespace": "dev",
       "enabled": true,
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "sqlite": {
-      "namespace": "nexus",
       "enabled": true,
       "command": "uvx",
       "args": ["--from", "sqlite-mcp-server-enhanced", "mcp-server-sqlite"],
@@ -121,13 +98,11 @@
       "tool_timeout_sec": 60
     },
     "stormux-files": {
-      "namespace": "nexus",
       "enabled": true,
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/lanie/nexus", "/home/lanie/"]
     },
     "tavily": {
-      "namespace": "web",
       "enabled": true,
       "command": "npx",
       "args": ["-y", "@tavily/mcp-server"],
@@ -139,17 +114,33 @@
       "tool_timeout_sec": 60
     },
     "vestige": {
-      "namespace": "dev",
       "enabled": true,
       "command": "/home/lanie/.local/bin/vestige"
     },
     "youtube-summarize": {
-      "namespace": "nexus",
       "enabled": true,
       "command": "uvx",
       "args": ["youtube-summarize"],
       "startup_timeout_sec": 10,
       "tool_timeout_sec": 60
+    }
+  },
+  "namespaces": {
+    "web": {
+      "description": "Services that pull in information from the internet",
+      "serverIds": ["brave-search", "duckduckgo", "exa", "fetch-url", "tavily"]
+    },
+    "nexus": {
+      "description": "Personal knowledge base and study tools",
+      "serverIds": ["context7", "iwe", "microsoft-learn", "sqlite", "stormux-files", "youtube-summarize"]
+    },
+    "dev": {
+      "description": "Programming and system execution tools",
+      "serverIds": ["desktop-commander", "github-local", "pieces", "python-exec", "sequential-thinking", "vestige"]
+    },
+    "hub": {
+      "description": "Communication and primary identity tools",
+      "serverIds": ["googlesuper"]
     }
   },
   "lastModified": "{{ now | date "2006-01-02T15:04:05Z07:00" }}"
