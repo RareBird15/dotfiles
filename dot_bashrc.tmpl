@@ -82,6 +82,11 @@ case ":$PATH:" in
 *":$CARGO_HOME/bin:"*) ;;
 *) PATH="$CARGO_HOME/bin:$PATH" ;;
 esac
+# Add Go binaries to PATH
+case ":$PATH:" in
+*":$GOPATH/bin:"*) ;;
+*) PATH="$GOPATH/bin:$PATH" ;;
+esac
 
 # =====================
 # 4. EDITOR & DIALOGS
