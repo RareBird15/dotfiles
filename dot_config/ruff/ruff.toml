@@ -1,0 +1,54 @@
+#:schema https://www.schemastore.org/ruff.json
+
+required-version = ">=0.15.9"
+target-version = "py314"
+line-length = 88
+preview = true
+show-fixes = true
+output-format = "concise"
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # Pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+    "ANN", # flake8-annotations
+    "RUF", # Ruff-specific rules
+    "TC",  # flake8-type-checking
+    "D",   # pydocstyle
+]
+extend-select = [
+    "A",    # shadowing builtins
+    "C4",   # better comprehensions
+    "RET",  # return consistency
+    "TRY",  # exception-handling quality
+    "PTH",  # pathlib usage
+    "PERF", # simple performance wins
+    "LOG",  # Checks for proper logging (better than print for backend)
+    "G",    # flake8-logging-format
+    "PIE",  # flake8-pie (unnecessary code cleanup)
+    "SLOT", # Use of __slots__ (memory efficiency for your Arch setup)
+]
+
+fixable = ["ALL"]
+per-file-ignores = { "*_test.py" = ["ANN"] }
+
+[format]
+quote-style = "single"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[lint.flake8-quotes]
+inline-quotes = "single"
+
+[lint.pydocstyle]
+convention = "google" # Use Google-style docstring conventions
+
+[lint.flake8-annotations]
+allow-star-arg-any = true
+
+[lint.pylint]
+max-args = 5
