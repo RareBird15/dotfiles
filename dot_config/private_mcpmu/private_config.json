@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "servers": {
+    "brave": {
+      "url": "https://brave.run.tools"
+    },
+    "context7": {
+      "url": "https://context7-mcp--upstash.run.tools"
+    },
+    "desktop-commander": {
+      "command": "npx",
+      "args": [
+        "--registry",
+        "https://registry.npmjs.org",
+        "@wonderwhy-er/desktop-commander@0.2.37"
+      ]
+    },
+    "exa": {
+      "url": "https://exa.run.tools"
+    },
+    "fetch": {
+      "url": "https://fetch--smithery-ai.run.tools"
+    },
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "google-tasks": {
+      "url": "https://googletasks.run.tools"
+    },
+    "iwe": {
+      "command": "/home/lanie/.local/share/cargo/bin/iwec",
+      "cwd": "/home/lanie/nexus",
+      "env": {
+        "IWE_PATH": "/home/lanie/nexus"
+      }
+    },
+    "ms-learn": {
+      "url": "https://learn_mcp--microsoft.run.tools"
+    },
+    "pieces-local": {
+      "url": "http://localhost:39300/model_context_protocol/2024-11-05/sse"
+    },
+    "pieces-tailscale": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://lanies-pc-1.tail7703f7.ts.net/model_context_protocol/2024-11-05/sse"
+      ]
+    },
+    "python-exec": {
+      "command": "uvx",
+      "args": [
+        "mcp-python-interpreter",
+        "--dir",
+        "/home/lanie/"
+      ]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "sqlite": {
+      "url": "https://sqlite--node2flow.run.tools"
+    },
+    "stormux-files": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/home/lanie/nexus",
+        "/home/lanie/"
+      ]
+    },
+    "vestige": {
+      "command": "/home/lanie/.local/bin/vestige"
+    },
+    "youtube": {
+      "url": "https://youtube-mcp--sfiorini.run.tools"
+    }
+  },
+  "lastModified": "2026-04-28T04:09:06.7410838-05:00"
+}
