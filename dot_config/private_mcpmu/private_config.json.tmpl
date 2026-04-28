@@ -1,41 +1,49 @@
 {
   "schemaVersion": 1,
-  "namespaces": {
-    "web": ["brave-search", "duckduckgo", "exa", "fetch-url", "tavily"],
-    "nexus": ["context7", "iwe", "microsoft-learn", "sqlite", "stormux-files", "youtube-summarize"],
-    "dev": ["desktop-commander", "github-local", "pieces", "python-exec", "sequential-thinking", "vestige"],
-    "hub": ["googlesuper"]
-  },
   "servers": {
     "brave-search": {
+      "namespace": "web",
       "enabled": true,
       "command": "npx",
       "args": ["-y", "@brave/brave-search-mcp-server"],
-      "env": { "BRAVE_API_KEY": "BSALTsLYTuovDKCbuHY54fgZhKQYulX" },
+      "env": { "BRAVE_API_KEY": {{ onepasswordRead "op://Personal/Brave Search API Key/credential" | quote }} },
       "startup_timeout_sec": 10,
       "tool_timeout_sec": 60
     },
     "context7": {
+      "namespace": "nexus",
       "enabled": true,
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"],
-      "env": { "CONTEXT7_API_KEY": "ctx7sk-58a5384c-b242-43dc-acd0-266d7d9e37a2" },
+      "env": { "CONTEXT7_API_KEY": {{ onepasswordRead "op://Personal/Context7 Secret Key/credential" | quote }} },
       "startup_timeout_sec": 10,
       "tool_timeout_sec": 60
     },
     "desktop-commander": {
+      "namespace": "dev",
+      "enabled": true,
       "command": "npx",
       "args": ["--registry", "https://registry.npmjs.org", "@wonderwhy-er/desktop-commander@0.2.37"]
     },
-    "exa": {
+    "duckduckgo": {
+      "namespace": "web",
       "enabled": true,
-      "env": { "EXA_API_KEY": "4477362c-734f-4992-a44a-36a8ec147323e" },
+      "command": "uvx",
+      "args": ["duckduckgo-mcp-server"],
+      "startup_timeout_sec": 10,
+      "tool_timeout_sec": 60
+    },
+    "exa": {
+      "namespace": "web",
+      "enabled": true,
+      "env": { "EXA_API_KEY": {{ onepasswordRead "op://Personal/Exa API Key/credential" | quote }} },
       "url": "https://mcp.exa.ai/mcp",
       "bearer_token_env_var": "EXA_API_KEY",
       "startup_timeout_sec": 10,
       "tool_timeout_sec": 60
     },
     "fetch-url": {
+      "namespace": "web",
       "enabled": true,
       "command": "npx",
       "args": ["-y", "@j0hanz/fetch-url-mcp"],
@@ -43,10 +51,13 @@
       "tool_timeout_sec": 60
     },
     "github-local": {
+      "namespace": "dev",
+      "enabled": true,
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"]
     },
     "googlesuper": {
+      "namespace": "hub",
       "enabled": true,
       "command": "npx",
       "args": [
@@ -58,11 +69,14 @@
       "tool_timeout_sec": 120
     },
     "iwe": {
+      "namespace": "nexus",
+      "enabled": true,
       "command": "/home/lanie/.local/share/cargo/bin/iwec",
       "cwd": "/home/lanie/nexus",
       "env": { "IWE_PATH": "/home/lanie/nexus" }
     },
     "microsoft-learn": {
+      "namespace": "nexus",
       "enabled": true,
       "url": "https://learn.microsoft.com/api/mcp",
       "startup_timeout_sec": 10,
@@ -70,6 +84,8 @@
     },
     {{- if eq .chezmoi.hostname "stormux" }}
     "pieces": {
+      "namespace": "dev",
+      "enabled": true,
       "command": "npx",
       "args": [
         "-y",
@@ -79,18 +95,25 @@
     },
     {{- else }}
     "pieces": {
+      "namespace": "dev",
+      "enabled": true,
       "url": "http://localhost:39300/model_context_protocol/2024-11-05/sse"
     },
     {{- end }}
     "python-exec": {
+      "namespace": "dev",
+      "enabled": true,
       "command": "uvx",
       "args": ["mcp-python-interpreter", "--dir", "/home/lanie/"]
     },
     "sequential-thinking": {
+      "namespace": "dev",
+      "enabled": true,
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "sqlite": {
+      "namespace": "nexus",
       "enabled": true,
       "command": "uvx",
       "args": ["--from", "sqlite-mcp-server-enhanced", "mcp-server-sqlite"],
@@ -98,13 +121,30 @@
       "tool_timeout_sec": 60
     },
     "stormux-files": {
+      "namespace": "nexus",
+      "enabled": true,
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/lanie/nexus", "/home/lanie/"]
     },
+    "tavily": {
+      "namespace": "web",
+      "enabled": true,
+      "command": "npx",
+      "args": ["-y", "@tavily/mcp-server"],
+      "env": {
+        "TAVILY_API_KEY": {{ onepasswordRead "op://Personal/Tavily API Key/credential" | quote }},
+        "DEFAULT_PARAMETERS": "{\"search_depth\": \"basic\", \"max_results\": 5,\"include_raw_content\": true}"
+      },
+      "startup_timeout_sec": 10,
+      "tool_timeout_sec": 60
+    },
     "vestige": {
+      "namespace": "dev",
+      "enabled": true,
       "command": "/home/lanie/.local/bin/vestige"
     },
     "youtube-summarize": {
+      "namespace": "nexus",
       "enabled": true,
       "command": "uvx",
       "args": ["youtube-summarize"],
