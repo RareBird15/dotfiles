@@ -31,3 +31,8 @@
     # Windows: Standard 1Password signing path
     program = "C:/Users/Windows11/AppData/Local/Microsoft/WindowsApps/op-ssh-sign.exe"
 {{- end }}
+
+# Mergiraf Syntax-Aware Merge Driver
+[merge "mergiraf"]
+    name = mergiraf
+    driver = mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L
