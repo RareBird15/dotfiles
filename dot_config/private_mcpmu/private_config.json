@@ -1,11 +1,31 @@
 {
   "schemaVersion": 1,
   "servers": {
-    "brave": {
-      "url": "https://brave.run.tools"
+    "brave-search": {
+      "enabled": true,
+      "command": "npx",
+      "args": [
+        "-y",
+        "@brave/brave-search-mcp-server"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "BSALTsLYTuovDKCbuHY54fgZhKQYulX"
+      },
+      "startup_timeout_sec": 10,
+      "tool_timeout_sec": 60
     },
     "context7": {
-      "url": "https://context7-mcp--upstash.run.tools"
+      "enabled": true,
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {
+        "CONTEXT7_API_KEY": "ctx7sk-58a5384c-b242-43dc-acd0-266d7d9e37a2"
+      },
+      "startup_timeout_sec": 10,
+      "tool_timeout_sec": 60
     },
     "desktop-commander": {
       "command": "npx",
@@ -16,16 +36,42 @@
       ]
     },
     "exa": {
-      "url": "https://exa.run.tools"
+      "enabled": true,
+      "env": {
+        "EXA_API_KEY": "4477362c-734f-4992-a44a-36a8ec147323e"
+      },
+      "url": "https://mcp.exa.ai/mcp",
+      "bearer_token_env_var": "EXA_API_KEY",
+      "startup_timeout_sec": 10,
+      "tool_timeout_sec": 60
     },
-    "fetch": {
-      "url": "https://fetch--smithery-ai.run.tools"
+    "fetch-url": {
+      "enabled": true,
+      "command": "npx",
+      "args": [
+        "-y",
+        "@j0hanz/fetch-url-mcp"
+      ],
+      "startup_timeout_sec": 10,
+      "tool_timeout_sec": 60
     },
-    "github": {
-      "url": "https://api.githubcopilot.com/mcp/"
+    "github-local": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ]
     },
     "google-tasks": {
-      "url": "https://googletasks.run.tools"
+      "enabled": true,
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://googletasks.run.tools"
+      ],
+      "startup_timeout_sec": 10,
+      "tool_timeout_sec": 60
     },
     "iwe": {
       "command": "/home/lanie/.local/share/cargo/bin/iwec",
@@ -34,8 +80,11 @@
         "IWE_PATH": "/home/lanie/nexus"
       }
     },
-    "ms-learn": {
-      "url": "https://learn_mcp--microsoft.run.tools"
+    "microsoft-learn": {
+      "enabled": true,
+      "url": "https://learn.microsoft.com/api/mcp",
+      "startup_timeout_sec": 10,
+      "tool_timeout_sec": 60
     },
     "pieces-local": {
       "url": "http://localhost:39300/model_context_protocol/2024-11-05/sse"
@@ -64,7 +113,15 @@
       ]
     },
     "sqlite": {
-      "url": "https://sqlite--node2flow.run.tools"
+      "enabled": true,
+      "command": "uvx",
+      "args": [
+        "--from",
+        "sqlite-mcp-server-enhanced",
+        "mcp-server-sqlite"
+      ],
+      "startup_timeout_sec": 10,
+      "tool_timeout_sec": 60
     },
     "stormux-files": {
       "command": "npx",
@@ -78,9 +135,15 @@
     "vestige": {
       "command": "/home/lanie/.local/bin/vestige"
     },
-    "youtube": {
-      "url": "https://youtube-mcp--sfiorini.run.tools"
+    "youtube-summarize": {
+      "enabled": true,
+      "command": "uvx",
+      "args": [
+        "youtube-summarize"
+      ],
+      "startup_timeout_sec": 10,
+      "tool_timeout_sec": 60
     }
   },
-  "lastModified": "2026-04-28T04:09:06.7410838-05:00"
+  "lastModified": "2026-04-28T07:42:17.733459274-05:00"
 }
