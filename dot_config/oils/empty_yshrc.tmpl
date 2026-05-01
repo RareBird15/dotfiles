@@ -1,8 +1,8 @@
 # ~/.config/oils/yshrc
 
-# Enable all modern YSH features and strict error handling
+# Enable modern YSH features
 shopt --set ysh:all
-shopt --set errexit
+shopt --set errexit nounset
 
 # Set a minimal, screen-reader-friendly prompt
 setglobal ENV.PS1 = r'\w \$ '
@@ -10,35 +10,43 @@ setglobal ENV.PS1 = r'\w \$ '
 # =====================
 # 0. XDG & ENVIRONMENT
 # =====================
-# Safely get the username and set the runtime dir
-var current_user = $(whoami)
-setglobal ENV.XDG_RUNTIME_DIR = "${XDG_RUNTIME_DIR:-/tmp/$current_user-runtime}"
+var my_home = "$HOME"
+var my_user = $(whoami)
 
-if not test -d "$XDG_RUNTIME_DIR" {
-    mkdir -pm 0700 "$XDG_RUNTIME_DIR"
-}
+var runtime_dir = "/tmp/$my_user-runtime"
+mkdir -pm 0700 "$runtime_dir"
 
-setglobal ENV.XDG_CONFIG_HOME = "$HOME/.config"
-setglobal ENV.XDG_DATA_HOME = "$HOME/.local/share"
-setglobal ENV.XDG_STATE_HOME = "$HOME/.local/state"
-setglobal ENV.XDG_CACHE_HOME = "$HOME/.cache"
-mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_CACHE_HOME"
+var config_home = "$my_home/.config"
+var data_home = "$my_home/.local/share"
+var state_home = "$my_home/.local/state"
+var cache_home = "$my_home/.cache"
+mkdir -p "$config_home" "$data_home" "$state_home" "$cache_home"
 
-setglobal ENV.CARGO_HOME = "$XDG_DATA_HOME/cargo"
-setglobal ENV.RUSTUP_HOME = "$XDG_DATA_HOME/rustup"
-setglobal ENV.GOPATH = "$XDG_DATA_HOME/go"
-setglobal ENV.NODE_REPL_HISTORY = "$XDG_STATE_HOME/node_repl_history"
-setglobal ENV.NPM_CONFIG_USERCONFIG = "$XDG_CONFIG_HOME/npm/npmrc"
-setglobal ENV.HISTFILE = "$XDG_STATE_HOME/ysh_history"
-setglobal ENV.INPUTRC = "$XDG_CONFIG_HOME/readline/inputrc"
-setglobal ENV.GNUPGHOME = "$XDG_DATA_HOME/gnupg"
-setglobal ENV.NPM_CONFIG_CACHE = "$XDG_CACHE_HOME/npm"
-setglobal ENV.NPM_CONFIG_TMP = "$XDG_CACHE_HOME/npm_tmp"
-setglobal ENV.RANDFILE = "$XDG_STATE_HOME/openssl_rnd"
-setglobal ENV.PYTHON_HISTORY = "$XDG_STATE_HOME/python_history"
-setglobal ENV.SCREENRC = "$XDG_CONFIG_HOME/screen/screenrc"
-setglobal ENV.XINITRC = "$XDG_CONFIG_HOME/X11/xinitrc"
-setglobal ENV.CODEX_HOME = "$XDG_CONFIG_HOME/codex"
+setglobal ENV.XDG_RUNTIME_DIR = runtime_dir
+setglobal ENV.XDG_CONFIG_HOME = config_home
+setglobal ENV.XDG_DATA_HOME = data_home
+setglobal ENV.XDG_STATE_HOME = state_home
+setglobal ENV.XDG_CACHE_HOME = cache_home
+
+var cargo_home = "$data_home/cargo"
+var rustup_home = "$data_home/rustup"
+var go_path = "$data_home/go"
+
+setglobal ENV.CARGO_HOME = cargo_home
+setglobal ENV.RUSTUP_HOME = rustup_home
+setglobal ENV.GOPATH = go_path
+setglobal ENV.NODE_REPL_HISTORY = "$state_home/node_repl_history"
+setglobal ENV.NPM_CONFIG_USERCONFIG = "$config_home/npm/npmrc"
+setglobal ENV.HISTFILE = "$state_home/ysh_history"
+setglobal ENV.INPUTRC = "$config_home/readline/inputrc"
+setglobal ENV.GNUPGHOME = "$data_home/gnupg"
+setglobal ENV.NPM_CONFIG_CACHE = "$cache_home/npm"
+setglobal ENV.NPM_CONFIG_TMP = "$cache_home/npm_tmp"
+setglobal ENV.RANDFILE = "$state_home/openssl_rnd"
+setglobal ENV.PYTHON_HISTORY = "$state_home/python_history"
+setglobal ENV.SCREENRC = "$config_home/screen/screenrc"
+setglobal ENV.XINITRC = "$config_home/X11/xinitrc"
+setglobal ENV.CODEX_HOME = "$config_home/codex"
 
 # Device-Specific Environment Tweaks
 {{- if eq .chezmoi.os "linux" }}
@@ -62,7 +70,7 @@ setglobal ENV.GOOGLE_CLIENT_SECRET = '{{ onepasswordRead "op://Personal/Google C
 # =====================
 # 2. PATH
 # =====================
-setglobal ENV.PATH = "$HOME/.local/bin:$HOME/bin:$HOME/.local/share/npm-global/bin:$CARGO_HOME/bin:$GOPATH/bin:$PATH"
+setglobal ENV.PATH = "$my_home/.local/bin:$my_home/bin:$my_home/.local/share/npm-global/bin:$cargo_home/bin:$go_path/bin:$PATH"
 
 # =====================
 # 3. EDITOR & DIALOGS
@@ -85,7 +93,9 @@ setglobal ENV.GPG_TTY = $(tty 2>/dev/null)
 # 4. COMPLETION SUPPORT
 # =====================
 if test -r /usr/share/bash-completion/bash_completion {
+    shopt --unset errexit nounset
     source /usr/share/bash-completion/bash_completion
+    shopt --set errexit nounset
 }
 
 # =====================
@@ -106,10 +116,10 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias ex='cd ~/exercism'
 
-# Using standard proc syntax
+# pj uses "|| true" so pressing Esc in fzf doesn't crash the shell
 proc pj {
-    var dir = $(zoxide query -l | fzf --height 40% --reverse --header="Jump to directory")
-    if test -n "$dir" { cd "$dir" }
+    var dir = $(zoxide query -l | fzf --height 40% --reverse --header="Jump to directory" || true)
+    if (dir !== '') { cd "$dir" }
 }
 
 alias gs='git status'
@@ -142,7 +152,7 @@ alias reload='source ~/.config/oils/yshrc'
   {{- end }}
 
 proc export_linux_packages {
-    var dir = "$HOME/.local/share/chezmoi/package-lists/linux"
+    var dir = "$my_home/.local/share/chezmoi/package-lists/linux"
     mkdir -p "$dir"
     echo "Exporting Linux package lists to $dir..."
 
@@ -169,43 +179,54 @@ alias qkf='cd ~/qmk_firmware && qk && qmk flash -kb keychron/k10_max/ansi/rgb -k
 # =====================
 # 6. APP INTEGRATIONS
 # =====================
+# Disable strict mode before loading messy Bash scripts
+shopt --unset errexit nounset
+
 if test -f ~/.cache/bash_inits/fzf.bash { source ~/.cache/bash_inits/fzf.bash }
 if test -f ~/.cache/bash_inits/zoxide.bash { source ~/.cache/bash_inits/zoxide.bash }
 if test -f ~/.cache/bash_inits/pieces.bash { source ~/.cache/bash_inits/pieces.bash }
 if test -f ~/.cache/bash_inits/starship.bash { source ~/.cache/bash_inits/starship.bash }
 
+# Turn strict mode back on
+shopt --set errexit nounset
+
 if command -v tldr >/dev/null 2>&1 {
-    tldr --update >/dev/null 2>&1 &
+    tldr --update >/dev/null 2>&1 || true &
 }
 
 # =====================
 # 7. CUSTOM FUNCTIONS & REMINDERS
 # =====================
 proc bible_reader_reminder {
-    var bin_file = "$HOME/projects/bible-reader/.venv/bin/maybe-read-bible"
-    var stamp_file = "$HOME/.local/state/bible-reader/last_prompt_date.txt"
+    var bin_file = "$my_home/projects/bible-reader/.venv/bin/maybe-read-bible"
+    var stamp_file = "$my_home/.local/state/bible-reader/last_prompt_date.txt"
 
-    if not test -f "$bin_file" { return }
+    if not test -f "$bin_file" { return 0 }
 
     var today = $(date +%F)
     if test -f "$stamp_file" {
-        var last_stamp = $(cat "$stamp_file" 2>/dev/null)
-        if (last_stamp == today) { return }
+        # Using || echo "none" prevents errexit crashes if cat fails
+        var last_stamp = $(cat "$stamp_file" 2>/dev/null || echo "none")
+        if (last_stamp === today) { return 0 }
     }
 
-    echo "\nBible reading pending. Run: br\n"
+    echo ""
+    echo "Bible reading pending. Run: br"
+    echo ""
 }
 
 alias br='"$HOME/projects/bible-reader/.venv/bin/maybe-read-bible"'
 
 bible_reader_reminder
 
-proc sanitize_blog (file) {
-    if test -z "$file" {
+proc sanitize_blog {
+    # Check for arguments safely before trying to read them
+    if test "$#" -eq 0 {
         echo "Usage: sanitize_blog <filename>"
         return 1
     }
 
+    var file = "$1"
     echo "Cleaning $file..."
     sed -i -e 's/- \[[ x]\] .*//g' "$file"
     sed -i -e '/^$/N;/^\n$/D' "$file"
