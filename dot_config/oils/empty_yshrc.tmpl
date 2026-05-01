@@ -4,81 +4,79 @@
 shopt --set ysh:all
 shopt --set errexit
 
-# Set a minimal, screen-reader-friendly prompt (Current directory + $)
-PS1='\w \$ '
+# Set a minimal, screen-reader-friendly prompt
+setglobal ENV.PS1 = '\w \$ '
 
 # =====================
 # 0. XDG & ENVIRONMENT
 # =====================
-export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$UID}"
-if not test -d "$XDG_RUNTIME_DIR" {
-    export XDG_RUNTIME_DIR="/tmp/$USER-runtime"
+if test -z "$XDG_RUNTIME_DIR" {
+    setglobal ENV.XDG_RUNTIME_DIR = "/tmp/$USER-runtime"
     mkdir -pm 0700 "$XDG_RUNTIME_DIR"
 }
 
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_STATE_HOME="$HOME/.local/state"
-export XDG_CACHE_HOME="$HOME/.cache"
+setglobal ENV.XDG_CONFIG_HOME = "$HOME/.config"
+setglobal ENV.XDG_DATA_HOME = "$HOME/.local/share"
+setglobal ENV.XDG_STATE_HOME = "$HOME/.local/state"
+setglobal ENV.XDG_CACHE_HOME = "$HOME/.cache"
 mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_CACHE_HOME"
 
-export CARGO_HOME="$XDG_DATA_HOME/cargo"
-export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
-export GOPATH="$XDG_DATA_HOME/go"
-export NODE_REPL_HISTORY="$XDG_STATE_HOME/node_repl_history"
-export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
-export HISTFILE="$XDG_STATE_HOME/ysh_history"
-export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
-export GNUPGHOME="$XDG_DATA_HOME/gnupg"
-export NPM_CONFIG_CACHE="$XDG_CACHE_HOME/npm"
-export NPM_CONFIG_TMP="${XDG_RUNTIME_DIR:-$XDG_CACHE_HOME/npm_tmp}"
-export RANDFILE="$XDG_STATE_HOME/openssl_rnd"
-export PYTHON_HISTORY="$XDG_STATE_HOME/python_history"
-export SCREENRC="$XDG_CONFIG_HOME/screen/screenrc"
-export XINITRC="$XDG_CONFIG_HOME/X11/xinitrc"
-export CODEX_HOME="$XDG_CONFIG_HOME/codex"
+setglobal ENV.CARGO_HOME = "$XDG_DATA_HOME/cargo"
+setglobal ENV.RUSTUP_HOME = "$XDG_DATA_HOME/rustup"
+setglobal ENV.GOPATH = "$XDG_DATA_HOME/go"
+setglobal ENV.NODE_REPL_HISTORY = "$XDG_STATE_HOME/node_repl_history"
+setglobal ENV.NPM_CONFIG_USERCONFIG = "$XDG_CONFIG_HOME/npm/npmrc"
+setglobal ENV.HISTFILE = "$XDG_STATE_HOME/ysh_history"
+setglobal ENV.INPUTRC = "$XDG_CONFIG_HOME/readline/inputrc"
+setglobal ENV.GNUPGHOME = "$XDG_DATA_HOME/gnupg"
+setglobal ENV.NPM_CONFIG_CACHE = "$XDG_CACHE_HOME/npm"
+setglobal ENV.NPM_CONFIG_TMP = "$XDG_CACHE_HOME/npm_tmp"
+setglobal ENV.RANDFILE = "$XDG_STATE_HOME/openssl_rnd"
+setglobal ENV.PYTHON_HISTORY = "$XDG_STATE_HOME/python_history"
+setglobal ENV.SCREENRC = "$XDG_CONFIG_HOME/screen/screenrc"
+setglobal ENV.XINITRC = "$XDG_CONFIG_HOME/X11/xinitrc"
+setglobal ENV.CODEX_HOME = "$XDG_CONFIG_HOME/codex"
 
 # Device-Specific Environment Tweaks
 {{- if eq .chezmoi.os "linux" }}
   {{- if and (hasKey .chezmoi.kernel "osrelease") (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
-    export BROWSER="wslview"
+    setglobal ENV.BROWSER = "wslview"
   {{- else if eq .chezmoi.hostname "stormux" }}
-    export OP_BIOMETRIC_UNLOCK_ENABLED="false"
+    setglobal ENV.OP_BIOMETRIC_UNLOCK_ENABLED = "false"
   {{- end }}
 {{- end }}
 
-export PAGER="less -Ri"
+setglobal ENV.PAGER = "less -Ri"
 
 # =====================
 # 1. Exported Variables
 # =====================
-export EXA_API_KEY={{ onepasswordRead "op://Personal/Exa API Key/credential" }}
-export GITHUB_PERSONAL_ACCESS_TOKEN={{ onepasswordRead "op://Personal/GitHub MCP Server Token/credential" }}
-export GOOGLE_CLIENT_ID={{ onepasswordRead "op://Personal/Google Cloud MCP-Omnibus Keys/username" }}
-export GOOGLE_CLIENT_SECRET={{ onepasswordRead "op://Personal/Google Cloud MCP-Omnibus Keys/credential" }}
+setglobal ENV.EXA_API_KEY = '{{ onepasswordRead "op://Personal/Exa API Key/credential" }}'
+setglobal ENV.GITHUB_PERSONAL_ACCESS_TOKEN = '{{ onepasswordRead "op://Personal/GitHub MCP Server Token/credential" }}'
+setglobal ENV.GOOGLE_CLIENT_ID = '{{ onepasswordRead "op://Personal/Google Cloud MCP-Omnibus Keys/username" }}'
+setglobal ENV.GOOGLE_CLIENT_SECRET = '{{ onepasswordRead "op://Personal/Google Cloud MCP-Omnibus Keys/credential" }}'
 
 # =====================
 # 2. PATH
 # =====================
-# YSH handles path appending cleanly using standard variables
-export PATH="$HOME/.local/bin:$HOME/bin:$HOME/.local/share/npm-global/bin:$CARGO_HOME/bin:$GOPATH/bin:$PATH"
+setglobal ENV.PATH = "$HOME/.local/bin:$HOME/bin:$HOME/.local/share/npm-global/bin:$CARGO_HOME/bin:$GOPATH/bin:$PATH"
 
 # =====================
 # 3. EDITOR & DIALOGS
 # =====================
-export EDITOR="code-insiders --wait"
-export VISUAL="code-insiders --wait"
+setglobal ENV.EDITOR = "code-insiders --wait"
+setglobal ENV.VISUAL = "code-insiders --wait"
 
 {{- if eq .chezmoi.os "linux" }}
   {{- if hasKey .chezmoi.kernel "osrelease" }}
     {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
-      export SUDO_EDITOR="/mnt/c/Users/Windows11/AppData/Local/Programs/Microsoft VS Code Insiders/bin/code-insiders --wait"
+      setglobal ENV.SUDO_EDITOR = "/mnt/c/Users/Windows11/AppData/Local/Programs/Microsoft VS Code Insiders/bin/code-insiders --wait"
     {{- end }}
   {{- end }}
 {{- end }}
 
-export DIALOGOPTS="--no-lines --visit-items"
-export GPG_TTY="$(tty 2>/dev/null)"
+setglobal ENV.DIALOGOPTS = "--no-lines --visit-items"
+setglobal ENV.GPG_TTY = $(tty 2>/dev/null)
 
 # =====================
 # 4. COMPLETION SUPPORT
@@ -105,7 +103,7 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias ex='cd ~/exercism'
 
-# Procs replace Bash functions () {}
+# Using standard proc syntax
 proc pj {
     var dir = $(zoxide query -l | fzf --height 40% --reverse --header="Jump to directory")
     if test -n "$dir" { cd "$dir" }
@@ -199,8 +197,7 @@ alias br='"$HOME/projects/bible-reader/.venv/bin/maybe-read-bible"'
 
 bible_reader_reminder
 
-proc sanitize_blog {
-    var file = $1
+proc sanitize_blog (file) {
     if test -z "$file" {
         echo "Usage: sanitize_blog <filename>"
         return 1
