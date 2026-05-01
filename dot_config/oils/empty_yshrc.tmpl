@@ -10,8 +10,9 @@ setglobal ENV.PS1 = r'\w \$ '
 # =====================
 # 0. XDG & ENVIRONMENT
 # =====================
-if test -z "$XDG_RUNTIME_DIR" {
-    setglobal ENV.XDG_RUNTIME_DIR = "/tmp/$USER-runtime"
+# Safely set the runtime dir, using the fallback if it does not exist
+setglobal ENV.XDG_RUNTIME_DIR = "${XDG_RUNTIME_DIR:-/tmp/$USER-runtime}"
+if not test -d "$XDG_RUNTIME_DIR" {
     mkdir -pm 0700 "$XDG_RUNTIME_DIR"
 }
 
