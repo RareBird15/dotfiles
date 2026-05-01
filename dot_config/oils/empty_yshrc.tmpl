@@ -2,6 +2,7 @@
 
 # Enable modern YSH features
 shopt --set ysh:all
+shopt --set expand_aliases
 shopt --set errexit nounset
 
 # Set a minimal, screen-reader-friendly prompt
@@ -62,10 +63,10 @@ setglobal ENV.PAGER = "less -Ri"
 # =====================
 # 1. Exported Variables
 # =====================
-setglobal ENV.EXA_API_KEY = '{{ onepasswordRead "op://Personal/Exa API Key/credential" }}'
-setglobal ENV.GITHUB_PERSONAL_ACCESS_TOKEN = '{{ onepasswordRead "op://Personal/GitHub MCP Server Token/credential" }}'
-setglobal ENV.GOOGLE_CLIENT_ID = '{{ onepasswordRead "op://Personal/Google Cloud MCP-Omnibus Keys/username" }}'
-setglobal ENV.GOOGLE_CLIENT_SECRET = '{{ onepasswordRead "op://Personal/Google Cloud MCP-Omnibus Keys/credential" }}'
+setglobal ENV.EXA_API_KEY = {{ onepasswordRead "op://Personal/Exa API Key/credential" | quote }}
+setglobal ENV.GITHUB_PERSONAL_ACCESS_TOKEN = {{ onepasswordRead "op://Personal/GitHub MCP Server Token/credential" | quote }}
+setglobal ENV.GOOGLE_CLIENT_ID = {{ onepasswordRead "op://Personal/Google Cloud MCP-Omnibus Keys/username" | quote }}
+setglobal ENV.GOOGLE_CLIENT_SECRET = {{ onepasswordRead "op://Personal/Google Cloud MCP-Omnibus Keys/credential" | quote }}
 
 # =====================
 # 2. PATH
@@ -201,7 +202,7 @@ proc bible_reader_reminder {
     var bin_file = "$my_home/projects/bible-reader/.venv/bin/maybe-read-bible"
     var stamp_file = "$my_home/.local/state/bible-reader/last_prompt_date.txt"
 
-    if not test -f "$bin_file" { return 0 }
+    if ! test -f "$bin_file" { return 0 }
 
     var today = $(date +%F)
     if test -f "$stamp_file" {
@@ -215,7 +216,7 @@ proc bible_reader_reminder {
     echo ""
 }
 
-alias br='"$HOME/projects/bible-reader/.venv/bin/maybe-read-bible"'
+alias br='$HOME/projects/bible-reader/.venv/bin/maybe-read-bible'
 
 bible_reader_reminder
 
