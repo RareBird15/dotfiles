@@ -10,8 +10,10 @@ setglobal ENV.PS1 = r'\w \$ '
 # =====================
 # 0. XDG & ENVIRONMENT
 # =====================
-# Safely set the runtime dir, using the fallback if it does not exist
-setglobal ENV.XDG_RUNTIME_DIR = "${XDG_RUNTIME_DIR:-/tmp/$USER-runtime}"
+# Safely get the username and set the runtime dir
+var current_user = $(whoami)
+setglobal ENV.XDG_RUNTIME_DIR = "${XDG_RUNTIME_DIR:-/tmp/$current_user-runtime}"
+
 if not test -d "$XDG_RUNTIME_DIR" {
     mkdir -pm 0700 "$XDG_RUNTIME_DIR"
 }
