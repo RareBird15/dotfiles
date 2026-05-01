@@ -11,7 +11,7 @@ setglobal ENV.PS1 = r'\w \$ '
 # =====================
 # 0. XDG & ENVIRONMENT
 # =====================
-var my_home = "$HOME"
+var my_home = ENV.HOME
 var my_user = $(whoami)
 
 var runtime_dir = "/tmp/$my_user-runtime"
@@ -71,7 +71,8 @@ setglobal ENV.GOOGLE_CLIENT_SECRET = {{ onepasswordRead "op://Personal/Google Cl
 # =====================
 # 2. PATH
 # =====================
-setglobal ENV.PATH = "$my_home/.local/bin:$my_home/bin:$my_home/.local/share/npm-global/bin:$cargo_home/bin:$go_path/bin:$PATH"
+var inherited_path = ENV.PATH
+setglobal ENV.PATH = "$my_home/.local/bin:$my_home/bin:$my_home/.local/share/npm-global/bin:$cargo_home/bin:$go_path/bin:$inherited_path"
 
 # =====================
 # 3. EDITOR & DIALOGS
@@ -106,7 +107,7 @@ alias ll='eza -l'
 alias la='eza -la'
 alias lt='eza --tree'
 alias lta='eza --tree -a'
-alias wget="wget --hsts-file=$XDG_CACHE_HOME/wget-hsts"
+alias wget='wget --hsts-file=$cache_home/wget-hsts'
 alias fp='fzf --preview "bat --style=numbers --color=always --line-range :500 {}"'
 alias rg='rg --smart-case'
 alias cp='cp -i'
@@ -216,7 +217,7 @@ proc bible_reader_reminder {
     echo ""
 }
 
-alias br='$HOME/projects/bible-reader/.venv/bin/maybe-read-bible'
+alias br='~/projects/bible-reader/.venv/bin/maybe-read-bible'
 
 bible_reader_reminder
 
