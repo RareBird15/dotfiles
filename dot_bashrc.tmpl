@@ -112,8 +112,9 @@ export DIALOGOPTS='--no-lines --visit-items'
 export GPG_TTY="$(tty 2>/dev/null)"
 
 # =====================
-# 6. COMPLETION & READLINE
+# 6. COMPLETION & SHELL SETUP
 # =====================
+# Readline keybindings
 bind 'set completion-ignore-case on'
 bind 'set show-all-if-ambiguous on'
 bind 'set page-completions off'
@@ -128,15 +129,29 @@ bind '"\e[F": end-of-line'
 bind '"\e[1~": beginning-of-line'
 bind '"\e[4~": end-of-line'
 
-# =====================
-# 7. COMPLETION SUPPORT
-# =====================
+# Bash completion framework
 if [[ -r /usr/share/bash-completion/bash_completion ]]; then
   . /usr/share/bash-completion/bash_completion
 fi
 
+# bootdev CLI completions
+if [[ -r ~/.bootdev_completion ]]; then
+  . ~/.bootdev_completion
+fi
+
+# Tool shell integrations
+eval "$(fzf --bash)" 2>/dev/null
+eval "$(zoxide init bash)" 2>/dev/null
+eval "$(pieces completion bash)" 2>/dev/null
+eval "$(starship init bash)" 2>/dev/null
+
+# Tealdeer (tldr) maintenance
+if command -v tldr >/dev/null 2>&1; then
+    (tldr --update >/dev/null 2>&1 &)
+fi
+
 # =====================
-# 8. ALIASES & EXPORTS
+# 7. ALIASES & EXPORTS
 # =====================
 # File & Directory
 alias ll='eza -l'
@@ -226,21 +241,7 @@ alias foam="node ~/foam/packages/foam-cli/out/index.js"
 export FOAM_WORKSPACE="/home/lanie/lanie-signal"
 
 # =====================
-# 9. APP INTEGRATIONS (HDD OPTIMIZED)
-# =====================
-# Sourcing pre-generated files is significantly faster than running 'eval' on an HDD
-if [[ -f ~/.cache/bash_inits/fzf.bash ]]; then source ~/.cache/bash_inits/fzf.bash; fi
-if [[ -f ~/.cache/bash_inits/zoxide.bash ]]; then source ~/.cache/bash_inits/zoxide.bash; fi
-if [[ -f ~/.cache/bash_inits/pieces.bash ]]; then source ~/.cache/bash_inits/pieces.bash; fi
-if [[ -f ~/.cache/bash_inits/starship.bash ]]; then source ~/.cache/bash_inits/starship.bash; fi
-
-# Tealdeer (tldr) maintenance
-if command -v tldr >/dev/null 2>&1; then
-    (tldr --update >/dev/null 2>&1 &)
-fi
-
-# =====================
-# 10. CUSTOM FUNCTIONS & REMINDERS
+# 8. CUSTOM FUNCTIONS & REMINDERS
 # =====================
 bible_reader_reminder() {
   local bin_file="$HOME/projects/bible-reader/.venv/bin/maybe-read-bible"
