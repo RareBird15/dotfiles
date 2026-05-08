@@ -1,18 +1,73 @@
-# config.nu
-#
-# Installed by:
-# version = "0.112.2"
-#
-# This file is used to override default Nushell settings, define
-# (or import) custom commands, or run any other startup tasks.
-# See https://www.nushell.sh/book/configuration.html
-#
-# Nushell sets "sensible defaults" for most configuration settings, 
-# so your `config.nu` only needs to override these defaults if desired.
-#
-# You can open this file in your default editor using:
-#     config nu
-#
-# You can also pretty-print and page through the documentation for configuration
-# options using:
-#     config nu --doc | nu-highlight | less -R
+# config.nu.tmpl
+# Screen Reader & Focus Mode Optimization
+$env.config = {
+    show_banner: false
+    render_right_prompt_on_last_line: true
+    edit_mode: emacs
+    bell: {
+        enabled: false
+    }
+    table: {
+        mode: none # Removes all ASCII box-drawing borders
+    }
+    error_style: "plain" # Removes visual formatting from error messages
+    use_ansi_coloring: false # Stops NVDA from reading hidden color codes
+}
+
+# --- UNIFIED ALIASES ---
+alias c = clear
+alias cz = chezmoi
+alias cza = chezmoi apply
+alias cze = chezmoi edit
+alias gs = git status
+alias ga = git add
+alias gc = git commit
+alias gp = git push
+alias gl = git pull
+
+# Modern Rust Tooling
+alias ls = eza --icons --group-directories-first
+alias ll = eza -l
+alias la = eza -la
+alias cat = bat --paging=never
+alias rg = rg --smart-case
+
+# --- PLATFORM SPECIFIC ---
+{{- if eq .chezmoi.os "windows" }}
+alias open = start
+alias winget = winget.exe
+{{- else }}
+alias open = wslview
+alias p = paru
+{{- end }}
+
+# --- CUSTOM FUNCTIONS (Memory Anchors) ---
+
+# Jump to Project (Your pj function)
+def pj [] {
+    let dir = (zi | fzf --height 40% --reverse --header="Jump to directory")
+    if ($dir | is-not-empty) { cd $dir }
+}
+
+# Bible Reader Reminder
+def show_bible_reminder [] {
+    let stamp_file = $"($env.HOME)/.local/state/bible-reader/last_prompt_date.txt"
+    let today = (date now | format date "%F")
+
+    if (not ($stamp_file | path exists)) or (open $stamp_file | str trim != $today) {
+        print "\nBible reading pending. Run: br\n"
+    }
+}
+
+# Run Bible Reader
+alias br = python3 $"($env.HOME)/projects/bible-reader/main.py"
+
+# --- INITIALIZATION ---
+source ~/.zoxide.nu
+
+# Starship Prompt
+mkdir ~/.cache/starship
+starship init nu | save -f ~/.cache/starship/init.nu
+source ~/.cache/starship/init.nu
+
+show_bible_reminder
