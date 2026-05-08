@@ -65,6 +65,9 @@ def show_bible_reminder [] {
 # Run Bible Reader
 alias br = python3 $"($env.HOME)/projects/bible-reader/main.py"
 
+# Nushell editor — argument list form so --wait is passed correctly
+$env.config.buffer_editor = ["code-insiders", "--wait"]
+
 # --- INITIALIZATION ---
 source ~/.zoxide.nu
 

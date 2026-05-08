@@ -1,0 +1,44 @@
+# env.nu — managed by chezmoi (deployed as mode 600 via private_ prefix)
+
+# Standard XDG Paths
+$env.XDG_CONFIG_HOME = $"($env.HOME)/.config"
+$env.XDG_DATA_HOME   = $"($env.HOME)/.local/share"
+$env.XDG_STATE_HOME  = $"($env.HOME)/.local/state"
+$env.XDG_CACHE_HOME  = $"($env.HOME)/.cache"
+
+# Language Specific Homes
+$env.CARGO_HOME = $"($env.XDG_DATA_HOME)/cargo"
+$env.GOPATH     = $"($env.XDG_DATA_HOME)/go"
+
+# 1Password Secrets (resolved at chezmoi apply time)
+$env.EXA_API_KEY = "{{ onepasswordRead "op://Personal/Exa API Key/credential" }}"
+$env.GITHUB_PERSONAL_ACCESS_TOKEN = "{{ onepasswordRead "op://Personal/GitHub MCP Server Token/credential" }}"
+
+# Editor — bare binary only so external tools (git, cron, sudoedit) can invoke it.
+# Nushell's own editor prompt uses buffer_editor (set in config.nu) which can carry --wait.
+$env.EDITOR = "code-insiders"
+$env.VISUAL = "code-insiders"
+
+# Path Management (Cross-Platform)
+# PATH is already a list in Nushell; split row is not needed.
+{{- if eq .chezmoi.os "windows" }}
+$env.PATH = (
+    $env.PATH
+    | append $"($env.HOME)/bin"
+    | append $"($env.LOCALAPPDATA)/Microsoft/WinGet/Links"
+    | uniq
+)
+{{- else }}
+$env.PATH = (
+    $env.PATH
+    | prepend $"($env.GOPATH)/bin"
+    | prepend $"($env.CARGO_HOME)/bin"
+    | prepend $"($env.HOME)/.local/bin"
+    | uniq
+)
+{{- end }}
+
+# Zoxide — generate init script only when missing (skips redundant work on every startup)
+if not ($"($env.HOME)/.zoxide.nu" | path exists) {
+    zoxide init nushell | save -f $"($env.HOME)/.zoxide.nu"
+}
