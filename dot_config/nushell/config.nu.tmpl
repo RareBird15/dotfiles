@@ -4,15 +4,14 @@ $env.config = {
     show_banner: false
     render_right_prompt_on_last_line: true
     edit_mode: emacs
-    bell: {
-        enabled: false
-    }
     table: {
         mode: none # Removes all ASCII box-drawing borders
     }
     error_style: "plain" # Removes visual formatting from error messages
     use_ansi_coloring: false # Stops NVDA from reading hidden color codes
 }
+# VS Code Shell Integration
+$env.config.shell_integration = true
 
 # --- UNIFIED ALIASES ---
 alias c = clear
@@ -72,8 +71,6 @@ $env.config.buffer_editor = ["code-insiders", "--wait"]
 source ~/.zoxide.nu
 
 # Starship Prompt
-mkdir ~/.cache/starship
-starship init nu | save -f ~/.cache/starship/init.nu
 source ~/.cache/starship/init.nu
 
 show_bible_reminder

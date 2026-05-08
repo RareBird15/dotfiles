@@ -42,3 +42,10 @@ $env.PATH = (
 if not ($"($env.HOME)/.zoxide.nu" | path exists) {
     zoxide init nushell | save -f $"($env.HOME)/.zoxide.nu"
 }
+
+# Starship — generate init script only when missing.
+# Must run in env.nu (before config.nu is parsed) so the `source` in config.nu resolves.
+if not ($"($env.HOME)/.cache/starship/init.nu" | path exists) {
+    mkdir $"($env.HOME)/.cache/starship"
+    starship init nushell | save -f $"($env.HOME)/.cache/starship/init.nu"
+}
