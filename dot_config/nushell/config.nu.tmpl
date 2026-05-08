@@ -36,6 +36,9 @@ alias rg = rg --smart-case
 {{- if eq .chezmoi.os "windows" }}
 alias open = start
 alias winget = winget.exe
+{{- else if eq .chezmoi.os "linux" }}
+alias open = xdg-open
+alias p = paru
 {{- else }}
 alias open = wslview
 alias p = paru
@@ -54,7 +57,7 @@ def show_bible_reminder [] {
     let stamp_file = $"($env.HOME)/.local/state/bible-reader/last_prompt_date.txt"
     let today = (date now | format date "%F")
 
-    if (not ($stamp_file | path exists)) or (open $stamp_file | str trim != $today) {
+    if (not ($stamp_file | path exists)) or (((open $stamp_file | str trim) != $today)) {
         print "\nBible reading pending. Run: br\n"
     }
 }
