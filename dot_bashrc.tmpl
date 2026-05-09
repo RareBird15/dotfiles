@@ -95,6 +95,12 @@ case ":$PATH:" in
 *":$GOPATH/bin:"*) ;;
 *) PATH="$GOPATH/bin:$PATH" ;;
 esac
+# Boot.dev Worldbanc Path
+case ":$PATH:" in
+*":$HOME/worldbanc/private/bin:"*) ;;
+*) PATH="$HOME/worldbanc/private/bin:$PATH" ;;
+esac
+
 
 # =====================
 # 5. EDITOR & DIALOGS
